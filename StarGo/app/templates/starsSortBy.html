@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-xxl fixed-top" style="background-color: #FFBC00;">
+            <div class="container-fluid">
+                <a href="/StarGo/app/templates/index.html">
+                    <img src="\static\main stargo icon.svg" alt="stargologo" width="200vw">
+                </a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item fs-3 ms-4">
+                            <a href="/StarGo/app/templates/places.html" class="nav-link">Places</a>
+                        </li>
+                        <li class="nav-item fs-3 ms-4">
+                            <a href="/StarGo/app/templates/stars.html" class="nav-link">Stars</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- <a href="/StarGo/app/templates/profile.html">
+                    <img src="\static\test_profile.png" alt="stargologo" width="50vw">
+                </a> -->
+
+                <!-- * dropdown ของ profile ขวาบน -->
+                <div class="dropdown">
+                    <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="\static\test_profile.png" alt="stargologo" width="50vw">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <li><a class="dropdown-item" href="/StarGo/app/templates/profile.html"><i class="bi bi-person me-2"></i>Your profile</a></li>
+                        <li><a class="dropdown-item" href="/StarGo/app/templates/settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Log out</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <section class="d-flex flex-column justify-content-start m-3" style="border: none solid orange; height: auto;">
+        <div class="container d-flex flex-column align-items-center position-relative my-5">
+
+            <div class="input-group input-group m-5" style="width: 50vw;">
+                <span class="input-group-text border-0" id="basic-addon1" style="background-color: #FFBC00; border-radius: 0%; ">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input id="searchInput" type="text" class="form-control border-0" placeholder="" style="background-color: #FFBC00; border-radius: 0%;">
+                <div id="searchResults" class="list-group position-absolute w-100 mt-5"></div>
+            </div>
+
+            <div class="d-flex gap-3 ">
+                <img src="/static/SQ_Marmink (1).png" alt="" class="shadow" style="width: 15vw;">
+                <div class=" d-flex flex-column align-self-center">
+                    <h1>Marmink CGM48</h1>
+                    <p class="fs-4">Manichar Aimdilokwong</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="d-flex flex-column align-items-start m-3 border-top">
+        <div class="container mt-5">
+            <h4>Where to go</h4>
+        </div>
+        <div class="container d-flex flex-wrap gap-2 mt-1">
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>            
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>            
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>            
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>
+
+            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                <h4>kanigi</h4>
+                <p class="fs-5">vitita ifeifeajife</p>
+            </div>
+        </div>
+
+
+    </section>
+
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+<script>
+
+
+    // ข้อมูลสมมติ
+    const suggestions = [
+        'Elon Musk', 
+        'Emma Watson', 
+        'Bill Gates', 
+        'Taylor Swift',
+        'Dwayne Johnson', 
+        'Leonardo DiCaprio', 
+        'Ariana Grande',
+        'Jeff Bezos', 
+        'Tom Hanks'
+    ];
+// ดึง element ที่เราจะใช้งานมาเก็บในตัวแปร
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('searchResults');
+// Event Listener: คอย "ฟัง" การพิมพ์ในช่องค้นหา
+    searchInput.addEventListener('input', function() {
+        const inputValue = this.value.toLowerCase();
+        resultsContainer.innerHTML = ''; // เคลียร์ผลลัพธ์เก่า
+
+        if (inputValue.length > 0) {    
+            const filteredSuggestions = suggestions.filter(suggestion => 
+            suggestion.toLowerCase().includes(inputValue)
+        );
+    
+            if (filteredSuggestions.length > 0) {
+                filteredSuggestions.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.className = 'list-group-item list-group-item-action';
+                    link.textContent = item;
+                    
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        searchInput.value = this.textContent;
+                        resultsContainer.innerHTML = '';
+                    });
+
+                    resultsContainer.appendChild(link);
+                });
+            }
+        }
+    });
+
+</script>
+</html>
