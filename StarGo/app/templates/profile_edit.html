@@ -21,43 +21,7 @@
 </head>
 
 <body style="padding-top: 100px;">
-    <header>
-        <!-- * Navbar -->
-        <nav class="navbar navbar-expand-xxl fixed-top" style="background-color: #FFBC00;">
-            <div class="container-fluid">
-                <a href="./index.html">
-                    <img src="/static/main stargo icon.svg" alt="stargologo" width="200vw">
-                </a>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav">
-                        <li class="nav-item fs-3 ms-4">
-                            <a href="./places.html" class="nav-link">Places</a>
-                        </li>
-                        <li class="nav-item fs-3 ms-4">
-                            <a href="./stars.html" class="nav-link">Stars</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- <a href="/StarGo/app/templates/profile.html">
-                    <img src="\static\test_profile.png" alt="stargologo" width="50vw">
-                </a> -->
-
-                <!-- * dropdown ของ profile ขวาบน -->
-                <div class="dropdown">
-                    <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="\static\test_profile.png" alt="stargologo" width="50vw">
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="./profile.html"><i class="bi bi-person me-2"></i>Your profile</a></li>
-                        <li><a class="dropdown-item" href="./settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Log out</a></li>
-                    </ul>
-                </div>
-
-            </div>
-        </nav>
-    </header>
+    {% include 'nav.html' %}
 
     <!-- * ======== ส่วนเนื้อหาหลัก ======== -->
     <div class="container my-5">
@@ -68,11 +32,12 @@
             <div class="col-md-3 border-end">
                 <div class="sidebar-nav">
                     <!-- * ใช้ Nav Component ของ Bootstrap เพื่อสร้างเมนู -->
-                    <div class="nav flex-column nav-pills">
-                        <a href="./settings.html" class="nav-link text-dark fs-5 mb-2">Edit Profile</a>
-                        <a href="./settingsChangePassword.html" class="nav-link text-dark fs-5 mb-2 active">Change Password</a>
+                    <!-- <div class="nav flex-column nav-pills">
+                        <a href="./settings.html" class="nav-link active fs-5 mb-2">Edit Profile</a>
+                        <a href="./settingsChangePassword.html" class="nav-link text-dark fs-5 mb-2">Change Password</a>
                         <a href="./settingsDeleteAccount.html" class="nav-link text-dark fs-5 mb-2">Delete Account</a>
-                    </div>
+                    </div> -->
+                        {% include 'nav_profile.html' with active_page='profile_edit' %}
                 </div>
             </div>
 
@@ -82,23 +47,33 @@
                 <div class="row align-items-center p-3">
                     <!-- * คอลัมน์สำหรับฟอร์ม -->
                     <div class="col-md-8">
-                        <h2 class="fw-bold mb-4">Change Password</h2>
+                        <h2 class="fw-bold mb-4">Edit Profile</h2>
                         <form>
                             <div class="mb-3">
-                                <label for="oldPassword" class="form-label fs-5">Old Password</label>
-                                <input type="text" class="form-control form-control-lg bg-light" id="oldPassword">
+                                <label for="firstName" class="form-label fs-5">First name</label>
+                                <input type="text" class="form-control form-control-lg bg-light" id="firstName">
                             </div>
                             <div class="mb-3">
-                                <label for="newPassword" class="form-label fs-5">New Password</label>
-                                <input type="text" class="form-control form-control-lg bg-light" id="newPassword">
+                                <label for="lastName" class="form-label fs-5">Last name</label>
+                                <input type="text" class="form-control form-control-lg bg-light" id="lastName">
                             </div>
                             <div class="mb-3">
-                                <label for="confirmNewPassword" class="form-label fs-5">Confirm New Password</label>
-                                <input type="text" class="form-control form-control-lg bg-light" id="confirmNewPassword">
+                                <label for="email" class="form-label fs-5">Email</label>
+                                <input type="email" class="form-control form-control-lg bg-light" id="email">
                             </div>
                             <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button>
                         </form>
                     </div>
+
+                    <!-- * คอลัมน์สำหรับรูปภาพ -->
+                    <div class="col-md-4 d-flex justify-content-center" style="border:none black 1px">
+                        <!-- * ทำให้รูปเป็นวงกลมและ responsive -->
+                        <img src="/static/test_profile.png" alt="Profile Picture" class="img-fluid rounded-circle w-75">
+                        
+                        <!-- ! โอ้ย ทำยังไงให้ icon ไปข้างล่างเนี่ย -->
+                        <i class="bi bi-pencil-square fs-4"></i>
+                    </div>
+
                 </div>
             </div>
 
