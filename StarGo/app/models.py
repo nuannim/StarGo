@@ -5,32 +5,32 @@ class Users(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     role = models.CharField(max_length=50, blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username
 
 
 class Celebrities(models.Model):
-    firstName = models.CharField(max_length=100)
-    lastName = models.CharField(max_length=100)
-    nickName = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=100)
     groups = models.ManyToManyField('Groups', blank=True)
-    imageURL = models.CharField(max_length=300, blank=True, null=True)
-    addByUsers = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    imageurl = models.CharField(max_length=300, blank=True, null=True)
+    addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.firstName} {self.lastName} ({self.nickName})"
+        return f"{self.firstname} {self.lastname} ({self.nickname})"
 
 
 class Groups(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     company = models.CharField(max_length=100, blank=True, null=True)
-    dateStartGroup = models.DateField(blank=True, null=True)
-    addByUsers = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    datestartgroup = models.DateField(blank=True, null=True)
+    addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -38,11 +38,11 @@ class Groups(models.Model):
 
 class Places(models.Model):
     name = models.CharField(max_length=100)
-    googlemapLink = models.CharField(max_length=300, blank=True, null=True)
+    googlemaplink = models.CharField(max_length=300, blank=True, null=True)
     address = models.CharField(max_length=200)
-    addByUsers = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    imageURL = models.CharField(max_length=300, blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
+    imageurl = models.CharField(max_length=300, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -51,9 +51,9 @@ class Places(models.Model):
 class Sightings(models.Model):
     celebrities = models.ForeignKey('Celebrities', on_delete=models.CASCADE)
     places = models.ForeignKey('Places', on_delete=models.CASCADE)
-    arrivalDate = models.DateField()
-    addByUsers = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    arrivaldate = models.DateField()
+    addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Sighting of {self.celebrities} at {self.places} on {self.arrivalDate}"
+        return f"Sighting of {self.celebrities} at {self.places} on {self.arrivaldate}"

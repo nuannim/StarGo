@@ -1,4 +1,8 @@
+from django.http import JsonResponse
 from django.shortcuts import render
+from .models import *
+from django.db.models.functions import Concat  # 1. Import Concat
+from django.db.models import Value             # 2. Import Value (สำหรับสร้างช่องว่าง)
 
 # Create your views here.
 def index(request):
@@ -6,13 +10,31 @@ def index(request):
 
 # * ===== Stars Views ===========================
 def stars(request):
-    return render(request, 'stars.html')
+    stars_queryset = Celebrities.objects.annotate(
+        name=Concat('firstname', Value(' '), 'lastname')
+    )
+
+    print(stars_queryset)
+    star_data = list(stars_queryset.values(
+        'id',
+        'name',
+    ))
+    print(star_data)
+
+    context = {
+        'star_data': star_data
+    }
+
+    return render(request, 'stars.html', context)
 
 def stars_addnewstar(request):
     return render(request, 'stars_addnewstar.html')
 
-def stars_sortby(request):
-    return render(request, 'stars_sortby.html')
+# def stars_sortby(request):
+#     return render(request, 'stars_sortby.html')
+
+def stars_sortby(request, celebrities_id):
+    return render(request, 'stars_sortby.html', {'celebrities_id': celebrities_id})
 
 # * ===== Places Views =========================
 def places(request):
@@ -36,3 +58,27 @@ def profile_changepassword(request):
 
 def profile_deleteaccount(request):
     return render(request, 'profile_deleteaccount.html')
+
+# * ===== other api (for js fetch) ========================
+# def get_stars_data(request):
+    # star = list(Celebrities.objects.values_list('firstname', flat=True))
+
+    # star = list(Celebrities.objects.annotate(
+    #     full_name=Concat('firstname', Value(' '), 'lastname')
+    #     ).values_list('full_name', flat=True))
+
+    # print(star)
+    # return JsonResponse(star, safe=False)   
+# =====
+    # stars_queryset = Celebrities.objects.annotate(
+    #     name=Concat('firstname', Value(' '), 'lastname')
+    # )
+
+    # print(stars_queryset)
+    # star_data = list(stars_queryset.values_list(
+    #     'id',
+    #     'name'
+    # ))
+    # print(star_data)
+        
+    # return JsonResponse(star_data, safe=False)

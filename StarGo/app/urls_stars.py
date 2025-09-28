@@ -7,10 +7,13 @@ from . import views
 
 urlpatterns = [
     path("", views.stars, name="stars"),
+    path("<int:celebrities_id>/", views.stars_sortby, name="stars_sortby"),
     path("addnewstar/", views.stars_addnewstar, name="stars_addnewstar"),
-    path("sortby/", views.stars_sortby, name="stars_sortby"),
+
+    # path("sortby/", views.stars_sortby, name="stars_sortby"),
 
     # path("sortby/<int:celebrities_id>", views.stars_sortby, name="stars_sortby"),
+    # path("api/get_stars_data/", views.get_stars_data, name="get_stars_data"),
 
 ]
 if settings.DEBUG:
