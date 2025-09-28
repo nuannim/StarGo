@@ -14,12 +14,10 @@ def stars(request):
         name=Concat('firstname', Value(' '), 'lastname')
     )
 
-    print(stars_queryset)
     star_data = list(stars_queryset.values(
         'id',
         'name',
     ))
-    print(star_data)
 
     context = {
         'star_data': star_data
@@ -34,7 +32,30 @@ def stars_addnewstar(request):
 #     return render(request, 'stars_sortby.html')
 
 def stars_sortby(request, celebrities_id):
-    return render(request, 'stars_sortby.html', {'celebrities_id': celebrities_id})
+    # * ก้อปมาจาก def stars()
+    stars_queryset = Celebrities.objects.annotate(
+        name=Concat('firstname', Value(' '), 'lastname')
+    )
+
+    star_data = list(stars_queryset.values(
+        'id',
+        'name',
+    ))
+    print(star_data)
+
+    # * celebrities
+    celebrities = Celebrities.objects.get(id=celebrities_id)
+
+    wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
+
+    context = {
+        'star_data': star_data,
+        'celebrities': celebrities,
+        'wheretogo': wheretogo,
+    }
+
+
+    return render(request, 'stars_sortby.html', context)
 
 # * ===== Places Views =========================
 def places(request):

@@ -23,7 +23,7 @@
             <!-- * dropdown ของ profile ขวาบน -->
             <div class="dropdown">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="\static\test_profile.png" alt="stargologo" width="50vw">
+                    <img src="{% static 'default-profile.png' %}" alt="stargologo" width="50vw" height="50vw" class="rounded-circle object-fit-cover">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Your profile</a></li>

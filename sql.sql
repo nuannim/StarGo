@@ -10,15 +10,14 @@ insert into app_celebrities (firstname, lastname, nickname, imageurl, created_at
 ('testceleb1', 'testceleb1', 'celeb1', null, now(), 2),
 ('testceleb2', 'testceleb2', 'celeb2', null, now(), 2);
 
-SELECT setval(
-  pg_get_serial_sequence('app_users', 'id'),
-  COALESCE((SELECT MAX(id) FROM app_users), 1),
-  true
-);
+insert into app_sightings (arrivaldate, created_at, celebrities_id, places_id, addby_users_id) VALUES
+('2023-10-01', now(), 1, 2, 2),
+('2023-10-02', now(), 1, 3, 2),
+('2023-10-03', now(), 2, 2, 2);
 
-
+-- Reset the sequence for app_sightings id to avoid conflicts
 SELECT setval(
-  pg_get_serial_sequence('app_places', 'id'),
-  COALESCE((SELECT MAX(id) FROM app_places), 1),
-  true
-);
+  pg_get_serial_sequence('app_sightings', 'id'),
+  COALESCE(MAX(id), 0) + 1,
+  false
+) FROM app_sightings;
