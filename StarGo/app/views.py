@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import *
-from django.db.models.functions import Concat  # 1. Import Concat
-from django.db.models import Value             # 2. Import Value (สำหรับสร้างช่องว่าง)
+from django.db.models.functions import Concat
+from django.db.models import Value
 
 # Create your views here.
 def index(request):
