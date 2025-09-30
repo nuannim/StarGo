@@ -1,5 +1,8 @@
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+
+from app.forms import *
 from .models import *
 from django.db.models.functions import Concat
 from django.db.models import Value
@@ -26,7 +29,26 @@ def stars(request):
     return render(request, 'stars.html', context)
 
 def stars_addnewstar(request):
-    return render(request, 'stars_addnewstar.html')
+    # groups = Groups.objects.all()
+
+    if request.method == 'GET':
+        form = CelebritiesForm()
+
+
+    else:
+        form = CelebritiesForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            form = CelebritiesForm()
+            return redirect('stars')
+
+    context = {
+        'form': form,
+        # 'groups': groups,
+    }
+
+
+    return render(request, 'stars_addnewstar.html', context)
 
 # def stars_sortby(request):
 #     return render(request, 'stars_sortby.html')
@@ -41,7 +63,7 @@ def stars_sortby(request, celebrities_id):
         'id',
         'name',
     ))
-    print(star_data)
+    # print(star_data)
 
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
@@ -53,7 +75,6 @@ def stars_sortby(request, celebrities_id):
         'celebrities': celebrities,
         'wheretogo': wheretogo,
     }
-
 
     return render(request, 'stars_sortby.html', context)
 

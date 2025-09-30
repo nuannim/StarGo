@@ -16,7 +16,7 @@ class Celebrities(models.Model):
     lastname = models.CharField(max_length=100)
     nickname = models.CharField(max_length=100)
     groups = models.ManyToManyField('Groups', blank=True)
-    imageurl = models.CharField(max_length=300, blank=True, null=True)
+    imageurl = models.FileField(upload_to='images/', blank=True, null=True) # * ถ้า upload_to='' จะไปเก็บใน media เลย
     addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

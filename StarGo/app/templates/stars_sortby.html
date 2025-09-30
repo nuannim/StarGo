@@ -28,13 +28,18 @@
             </div>
 
             <div class="d-flex gap-5">
-                <img src="{% static 'default-profile.png' %}" alt="" class="shadow" style="width: 15vw;">
-                <div class=" d-flex flex-column align-self-center">
-                    <!-- <h1>Marmink CGM48</h1>
-                    <p class="fs-4">Manichar Aimdilokwong</p> -->
-                    <h1>{{ celebrities.nickname }}</h1>
-                    <p class="fs-4">{{ celebrities.firstname }} {{ celebrities.lastname }}</p>
-                </div>
+                {% if not celebrities.imageurl %}
+                    <img src="{% static 'default-profile.png' %}" alt="" class="shadow" style="width: 15vw;">
+                {% else %}
+                    <img src="{{ celebrities.imageurl.url }}" alt="" class="shadow" style="width: 15vw;">
+                {% endif %}
+                    <div class=" d-flex flex-column align-self-center">
+                        <!-- <h1>Marmink CGM48</h1>
+                        <p class="fs-4">Manichar Aimdilokwong</p> -->
+                        <h1>{{ celebrities.nickname }}</h1>
+                        <p class="fs-4">{{ celebrities.firstname }} {{ celebrities.lastname }}</p>
+                    </div>
+
             </div>
 
         </div>
@@ -48,7 +53,11 @@
         {% for i in wheretogo %}
             <a href="" class="link-primary text-decoration-none text-black">
                 <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 50vh;">
-                    <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
+                    {% if i %}
+                        <img src="{% static 'default-place.png' %}" alt="" style="width: 15vw;" class="m-3">
+                    {% else %}
+                        <img src="{{ i.imageurl }}" alt="" style="width: 15vw;" class="m-3">
+                    {% endif %}
                     <h4>{{ i.places.name }}</h4>
                     <p class="fs-5">{{ i.places.name }}</p>
                 </div>
