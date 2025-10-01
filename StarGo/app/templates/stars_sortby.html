@@ -38,6 +38,16 @@
                         <p class="fs-4">Manichar Aimdilokwong</p> -->
                         <h1>{{ celebrities.nickname }}</h1>
                         <p class="fs-4">{{ celebrities.firstname }} {{ celebrities.lastname }}</p>
+                        {% if celebrities.groups.all %}
+                            <p class="fs-5">(
+                            {% for i in celebrities.groups.all %}
+                                {{ i.name }}
+                                {% if not forloop.last %}
+                                    ,
+                                {% endif %}
+                            {% endfor %}
+                            )</p>
+                        {% endif %}
                         <a href="{% url 'sightings' celebrities_id=celebrities.id %}" style="background-color: #FFBC00;" class="btn btn-lg">add new visited place</a>
                             <!-- <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button> -->
 
@@ -51,23 +61,29 @@
     </section>
 
     <section class="d-flex flex-column align-items-start m-3 border-top">
-        <div class="container mt-5">
+        <div class="container mt-5 d-flex justify-content-center">
             <h4>Where to go</h4>
         </div>
         <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
-        {% for i in wheretogo %}
-            <a href="" class="link-primary text-decoration-none text-black">
-                <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 50vh;">
-                    {% if i %}
-                        <img src="{% static 'default-place.png' %}" alt="" style="width: 15vw;" class="m-3">
-                    {% else %}
-                        <img src="{{ i.imageurl }}" alt="" style="width: 15vw;" class="m-3">
-                    {% endif %}
-                    <h4>{{ i.places.name }}</h4>
-                    <p class="fs-5">{{ i.places.name }}</p>
-                </div>
-            </a>
-        {% endfor %}
+        {% if wheretogo %}
+            {% for i in wheretogo %}
+                <a href="" class="link-primary text-decoration-none text-black">
+                    <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 50vh;">
+                        {% if not i.places.imageurl %}
+                            <img src="{% static 'default-place.png' %}" alt="" style="width: 15vw;" class="m-3">
+                        {% else %}
+                            <img src="{{ i.places.imageurl }}" alt="" style="width: 15vw;" class="m-3">
+                        {% endif %}
+                        <h4>{{ i.places.name }}</h4>
+                        <p class="fs-5">{{ i.places.name }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <div class="m-3">
+                <h1>no where</h1>
+            </div>
+        {% endif %}
             <!-- <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
                 <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
                 <h4>kanigi</h4>

@@ -90,7 +90,6 @@ def stars_sortby(request, celebrities_id):
     stars_queryset = Celebrities.objects.annotate(
         name=Concat('firstname', Value(' '), 'lastname')
     )
-
     star_data = list(stars_queryset.values(
         'id',
         'name',
@@ -100,6 +99,11 @@ def stars_sortby(request, celebrities_id):
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
+    print('wheretogo:', wheretogo)
+
+    # print('celebrities.groups.name:', celebrities.groups.all())
+    # for i in celebrities.groups.all():
+    #     print(i.name)
 
     context = {
         'star_data': star_data,
@@ -111,13 +115,37 @@ def stars_sortby(request, celebrities_id):
 
 # * ===== Places Views =========================
 def places(request):
-    return render(request, 'places.html')
+    places = Places.objects.all()
+    place_data = list(places.values(
+        'id',
+        'name'
+    ))
+
+    context = {
+        'place_data': place_data,
+    }
+
+    return render(request, 'places.html', context)
+
 
 def places_addnewplace(request):
     return render(request, 'places_addnewplace.html')
 
-def places_sortby(request):
-    return render(request, 'places_sortby.html')
+def places_sortby(request, places_id):
+    places = Places.objects.get(id=places_id)
+    sightings = Sightings.objects.filter(places=places_id)
+    place_data = list(places.values(
+        'id',
+        'name'
+    ))
+
+    context = {
+        'place_data': place_data,
+        'places': places,
+        'sightings': sightings
+    }
+
+    return render(request, 'places_sortby.html', context)
 
 # * ===== Profile Views ========================
 def profile(request):
