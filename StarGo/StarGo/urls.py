@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', include('app.urls')),
     path('', views.index, name='index'),
+    path('sightings/<int:celebrities_id>/', views.sightings, name='sightings'),
     path('stars/', include('app.urls_stars')),
     path('places/', include('app.urls_places')),
     path('profile/', include('app.urls_profile')),

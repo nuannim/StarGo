@@ -11,6 +11,35 @@ from django.db.models import Value
 def index(request):
     return render(request, 'index.html')
 
+def sightings(request, celebrities_id):
+    celebrities = Celebrities.objects.get(id=celebrities_id)
+
+    if request.method == 'GET':
+        form = SightingsForm()
+    else:
+        form = SightingsForm(request.POST)
+        if form.is_valid():
+            sighting = form.save(commit=False)
+            sighting.celebrities = Celebrities.objects.get(id=celebrities_id)
+            # sighting.addby_users = request.user
+            sighting.save()
+
+            print(sighting.places)
+            print(sighting.arrivaldate)
+            print(sighting.celebrities)
+            print(sighting.addby_users)
+
+            form = SightingsForm()
+            return redirect('sightings', celebrities_id=celebrities_id)
+        
+    context = {
+        'form': form,
+        'celebrities_id': celebrities_id,
+        'celebrities': celebrities,
+    }
+
+    return render(request, 'sightings.html', context)
+
 # * ===== Stars Views ===========================
 def stars(request):
     stars_queryset = Celebrities.objects.annotate(
@@ -27,6 +56,7 @@ def stars(request):
     }
 
     return render(request, 'stars.html', context)
+
 
 def stars_addnewstar(request):
     # groups = Groups.objects.all()
@@ -50,8 +80,10 @@ def stars_addnewstar(request):
 
     return render(request, 'stars_addnewstar.html', context)
 
+
 # def stars_sortby(request):
 #     return render(request, 'stars_sortby.html')
+
 
 def stars_sortby(request, celebrities_id):
     # * ก้อปมาจาก def stars()
@@ -67,7 +99,6 @@ def stars_sortby(request, celebrities_id):
 
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
-
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
 
     context = {
@@ -100,6 +131,7 @@ def profile_changepassword(request):
 
 def profile_deleteaccount(request):
     return render(request, 'profile_deleteaccount.html')
+
 
 # * ===== other api (for js fetch) ========================
 # def get_stars_data(request):

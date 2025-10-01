@@ -23,3 +23,19 @@ class CelebritiesForm(ModelForm):
         return cleaned_data
     
 
+class SightingsForm(ModelForm):
+    class Meta:
+        model = Sightings
+        fields = ['places', 'arrivaldate']
+        # add-fields ==> ['celebrities', 'places', 'arrivaldate', 'addby_users', 'created_at']
+        widgets = {
+            'places': forms.Select(attrs={'class': 'form-control bg-light'}),
+            'arrivaldate': forms.DateInput(attrs={'class': 'form-control bg-light', 'type': 'date'}),
+        }
+
+    def clean_data(self):
+        cleaned_data = super().clean()
+        # Perform custom validation here if needed
+        return cleaned_data
+    
+
