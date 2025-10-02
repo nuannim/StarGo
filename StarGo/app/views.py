@@ -24,10 +24,10 @@ def sightings(request, celebrities_id):
             # sighting.addby_users = request.user
             sighting.save()
 
-            print(sighting.places)
-            print(sighting.arrivaldate)
-            print(sighting.celebrities)
-            print(sighting.addby_users)
+            # print(sighting.places)
+            # print(sighting.arrivaldate)
+            # print(sighting.celebrities)
+            # print(sighting.addby_users)
 
             form = SightingsForm()
             return redirect('sightings', celebrities_id=celebrities_id)
@@ -116,7 +116,7 @@ def stars_sortby(request, celebrities_id):
 # * ===== Places Views =========================
 def places(request):
     places = Places.objects.all()
-    print('places:', places)
+    # print('places:', places)
     place_data = list(places.values(
         'id',
         'name'

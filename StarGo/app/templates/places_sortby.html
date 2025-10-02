@@ -49,15 +49,18 @@
         <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
         {% if whocamehere %}
             {% for i in whocamehere %}
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                {% if not i.celebrities.imageurl %}
-                <img src="{% static 'default-profile.png' %}" alt="" style="width: 15vw;" class="m-3">
-                {% else %}
-                <img src="{{i.celebrities.imageurl}}" alt="" style="width: 15vw;" class="m-3">
-                {% endif %}
-                <h4>{{i.celebrities.nickname}}</h4>
-                <p class="fs-5">{{i.celebrities.firstname}} {{i.celebrities.lastname}}</p>
-            </div>
+            <a href="{% url 'stars_sortby' celebrities_id=i.celebrities.id %}" class="link-primary text-decoration-none text-black">
+                <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                    {% if not i.celebrities.imageurl %}
+                    <img src="{% static 'default-profile.png' %}" alt="" style="width: 15vw;" class="m-3">
+                    {% else %}
+                    <img src="{{ i.celebrities.imageurl.url }}" alt="" style="width: 15vw;" class="m-3">
+                    {% endif %}
+                    <h4>{{i.celebrities.nickname}}</h4>
+                    <p class="fs-5">{{i.celebrities.firstname}} {{i.celebrities.lastname}}</p>
+                </div>
+            </a>
+
             {% endfor %}
         {% else %}
             <h3>no one</h3>
