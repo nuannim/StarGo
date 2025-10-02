@@ -99,7 +99,7 @@ def stars_sortby(request, celebrities_id):
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
-    print('wheretogo:', wheretogo)
+    # print('wheretogo:', wheretogo)
 
     # print('celebrities.groups.name:', celebrities.groups.all())
     # for i in celebrities.groups.all():
@@ -116,6 +116,7 @@ def stars_sortby(request, celebrities_id):
 # * ===== Places Views =========================
 def places(request):
     places = Places.objects.all()
+    print('places:', places)
     place_data = list(places.values(
         'id',
         'name'
@@ -129,11 +130,28 @@ def places(request):
 
 
 def places_addnewplace(request):
-    return render(request, 'places_addnewplace.html')
+    if request.method == 'GET':
+        form = PlacesForm()
+    else:
+        form = PlacesForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            form = PlacesForm()
+            return redirect('places')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'places_addnewplace.html', context)
+
 
 def places_sortby(request, places_id):
-    places = Places.objects.get(id=places_id)
-    sightings = Sightings.objects.filter(places=places_id)
+    thisplace = Places.objects.get(id=places_id)
+    whocamehere = Sightings.objects.filter(places=places_id)
+    # print('whocamehere:', whocamehere)
+
+    places = Places.objects.all()
     place_data = list(places.values(
         'id',
         'name'
@@ -141,8 +159,8 @@ def places_sortby(request, places_id):
 
     context = {
         'place_data': place_data,
-        'places': places,
-        'sightings': sightings
+        'thisplace': thisplace,
+        'whocamehere': whocamehere
     }
 
     return render(request, 'places_sortby.html', context)

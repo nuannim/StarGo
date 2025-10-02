@@ -23,6 +23,23 @@ class CelebritiesForm(ModelForm):
         return cleaned_data
     
 
+class PlacesForm(ModelForm):
+    class Meta:
+        model = Places
+        fields = ['name', 'googlemaplink', 'address', 'imageurl']
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control bg-light'}),
+            'googlemaplink': TextInput(attrs={'class': 'form-control bg-light'}),
+            'address': Textarea(attrs={'class': 'form-control bg-light'}),
+            'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
+        }
+
+    def clean_data(self):
+        cleaned_data = super().clean()
+        # Perform custom validation here if needed
+        return cleaned_data
+
+
 class SightingsForm(ModelForm):
     class Meta:
         model = Sightings
