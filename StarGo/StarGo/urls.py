@@ -29,6 +29,7 @@ urlpatterns = [
     path('stars/', include('app.urls_stars')),
     path('places/', include('app.urls_places')),
     path('profile/', include('app.urls_profile')),
+    path('groups/', views.groups, name='groups'),
 
     path('login/', views.loginpage, name='loginpage'),
     path('logout/', views.logoutpage, name='logoutpage'),

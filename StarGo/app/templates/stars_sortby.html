@@ -23,7 +23,7 @@
                 <span class="input-group-text border-0" id="basic-addon1" style="background-color: #FFBC00; border-radius: 0%; ">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input id="searchInput" type="text" class="form-control border-0" placeholder="" style="background-color: #FFBC00; border-radius: 0%;">
+                <input id="searchInput" type="text" class="form-control border-0" placeholder="Search your lovely stars" style="background-color: #FFBC00; border-radius: 0%;">
                 <div id="searchResults" class="list-group position-absolute w-100 mt-5"></div>
             </div>
 
@@ -61,21 +61,21 @@
     </section>
 
     <section class="d-flex flex-column align-items-start m-3 border-top">
-        <div class="container mt-5 d-flex justify-content-center">
-            <h4>Where to go</h4>
+        <div class="container mt-5 mb-3 d-flex justify-content-center">
+            <h3>Where to go</h3>
         </div>
         <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
         {% if wheretogo %}
             {% for i in wheretogo %}
                 <a href="{% url 'places_sortby' places_id=i.places.id %}" class="link-primary text-decoration-none text-black">
-                    <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 50vh;">
+                    <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 100%; width: 18vw;">
                         {% if not i.places.imageurl %}
-                            <img src="{% static 'default-place.png' %}" alt="" style="width: 15vw;" class="m-3">
+                            <img src="{% static 'default-place.png' %}" alt="" style="width: 80%; aspect-ratio: 4/3; object-fit: cover;" class="m-3">
                         {% else %}
-                            <img src="{{ i.places.imageurl }}" alt="" style="width: 15vw;" class="m-3">
+                            <img src="{{ i.places.imageurl.url }}" alt="" style="width: 80%; aspect-ratio: 4/3; object-fit: cover;" class="m-3">
                         {% endif %}
-                        <h4>{{ i.places.name }}</h4>
-                        <p class="fs-5">{{ i.places.name }}</p>
+                        <h4 class="d-block text-center">{{ i.places.name }}</h4>
+                        <p class="text-sm-center d-block">{{ i.places.address }}</p>
                     </div>
                 </a>
             {% endfor %}

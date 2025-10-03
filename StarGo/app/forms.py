@@ -23,7 +23,7 @@ class CelebritiesForm(ModelForm):
         cleaned_data = super().clean()
         # Perform custom validation here if needed
         return cleaned_data
-    
+
 
 class PlacesForm(ModelForm):
     class Meta:
@@ -56,7 +56,24 @@ class SightingsForm(ModelForm):
         cleaned_data = super().clean()
         # Perform custom validation here if needed
         return cleaned_data
-    
+
+
+class GroupsForm(ModelForm):
+    class Meta:
+        model = Groups
+        fields = ['name', 'description', 'company', 'datestartgroup']
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control bg-light'}),
+            'description': Textarea(attrs={'class': 'form-control bg-light'}),
+            'company': TextInput(attrs={'class': 'form-control bg-light'}),
+            'datestartgroup': forms.DateInput(attrs={'class': 'form-control bg-light', 'type': 'date'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Perform custom validation here if needed
+        return cleaned_data
+
 
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(

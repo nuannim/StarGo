@@ -188,6 +188,10 @@ def places_sortby(request, places_id):
 # * ===== Profile Views ========================
 @login_required
 def profile(request):
+    user = request.user
+    users = Users.objects.get(auth_user=user)
+    print('users:', users)
+
     return render(request, 'profile.html')
 
 @login_required
@@ -258,6 +262,23 @@ def registerpage(request):
     }
 
     return render (request, 'registerpage.html', context)
+
+@login_required
+def groups(request):
+    if request.method == 'GET':
+        form = GroupsForm()
+    else:
+        form = GroupsForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            form = GroupsForm()
+            return redirect('groups')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'groups.html', context)
 
 
 # * ===== other api (for js fetch) ========================

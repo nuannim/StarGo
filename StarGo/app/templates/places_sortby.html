@@ -23,7 +23,7 @@
                 <span class="input-group-text border-0" id="basic-addon1" style="background-color: #FFBC00; border-radius: 0%; ">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input id="searchInput" type="text" class="form-control border-0" placeholder="" style="background-color: #FFBC00; border-radius: 0%;">
+                <input id="searchInput" type="text" class="form-control border-0" placeholder="Search where to go" style="background-color: #FFBC00; border-radius: 0%;">
                 <div id="searchResults" class="list-group position-absolute w-100 mt-5"></div>
             </div>
 
@@ -38,23 +38,24 @@
             <div class="d-flex flex-column align-items-center mt-3">
                 <h1>{{thisplace.name}}</h1>
                 <p class="fs-4">{{thisplace.address}}</p>
+                <a href="{{ thisplace.googlemaplink }}" style="background-color: #FFBC00;" class="btn btn-lg">Google Maps Link</a>
             </div>
         </div>
     </section>
 
     <section class="d-flex flex-column align-items-start m-3 border-top">
-        <div class="container my-5 d-flex justify-content-center">
+        <div class="container mt-5 mb-3 d-flex justify-content-center">
             <h3>Who came here?</h3>
         </div>
         <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
         {% if whocamehere %}
             {% for i in whocamehere %}
             <a href="{% url 'stars_sortby' celebrities_id=i.celebrities.id %}" class="link-primary text-decoration-none text-black">
-                <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
+                <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 100%; width: 18vw;">
                     {% if not i.celebrities.imageurl %}
-                    <img src="{% static 'default-profile.png' %}" alt="" style="width: 15vw;" class="m-3">
+                    <img src="{% static 'default-profile.png' %}" alt="" style="width: 80%; aspect-ratio: 1/1; object-fit: cover;"  class="m-3">
                     {% else %}
-                    <img src="{{ i.celebrities.imageurl.url }}" alt="" style="width: 15vw;" class="m-3">
+                    <img src="{{ i.celebrities.imageurl.url }}" alt="" style="width: 80%; aspect-ratio: 1/1; object-fit: cover;"  class="m-3">
                     {% endif %}
                     <h4>{{i.celebrities.nickname}}</h4>
                     <p class="fs-5">{{i.celebrities.firstname}} {{i.celebrities.lastname}}</p>
