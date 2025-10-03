@@ -134,3 +134,5 @@ import os
 
 MEDIA_URL = '/image/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'image')
+
+LOGIN_URL = 'loginpage'

@@ -1,16 +1,26 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from django.db.models.functions import Concat
+from django.db.models import Value
+
+from django.contrib import messages
+from django.views import View
+
+from django.contrib.auth import logout, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from app.forms import *
 from .models import *
-from django.db.models.functions import Concat
-from django.db.models import Value
+
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
+@login_required
 def sightings(request, celebrities_id):
     celebrities = Celebrities.objects.get(id=celebrities_id)
 
@@ -41,6 +51,8 @@ def sightings(request, celebrities_id):
     return render(request, 'sightings.html', context)
 
 # * ===== Stars Views ===========================
+
+@login_required
 def stars(request):
     stars_queryset = Celebrities.objects.annotate(
         name=Concat('firstname', Value(' '), 'lastname')
@@ -57,7 +69,7 @@ def stars(request):
 
     return render(request, 'stars.html', context)
 
-
+@login_required
 def stars_addnewstar(request):
     # groups = Groups.objects.all()
 
@@ -85,6 +97,7 @@ def stars_addnewstar(request):
 #     return render(request, 'stars_sortby.html')
 
 
+@login_required
 def stars_sortby(request, celebrities_id):
     # * ก้อปมาจาก def stars()
     stars_queryset = Celebrities.objects.annotate(
@@ -114,6 +127,7 @@ def stars_sortby(request, celebrities_id):
     return render(request, 'stars_sortby.html', context)
 
 # * ===== Places Views =========================
+@login_required
 def places(request):
     places = Places.objects.all()
     # print('places:', places)
@@ -129,6 +143,7 @@ def places(request):
     return render(request, 'places.html', context)
 
 
+@login_required
 def places_addnewplace(request):
     if request.method == 'GET':
         form = PlacesForm()
@@ -146,6 +161,7 @@ def places_addnewplace(request):
     return render(request, 'places_addnewplace.html', context)
 
 
+@login_required
 def places_sortby(request, places_id):
     thisplace = Places.objects.get(id=places_id)
     whocamehere = Sightings.objects.filter(places=places_id)
@@ -166,18 +182,48 @@ def places_sortby(request, places_id):
     return render(request, 'places_sortby.html', context)
 
 # * ===== Profile Views ========================
+@login_required
 def profile(request):
     return render(request, 'profile.html')
 
+@login_required
 def profile_edit(request):
     return render(request, 'profile_edit.html')
 
+@login_required
 def profile_changepassword(request):
     return render(request, 'profile_changepassword.html')
 
+@login_required
 def profile_deleteaccount(request):
     return render(request, 'profile_deleteaccount.html')
 
+
+# * ===== Login/Logout Authentication ==========================
+def loginpage(request):
+    if request.method == 'GET':
+        form = AuthenticationForm()
+        
+    else:
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('places')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+    context = {
+            'form': form
+        }
+
+    return render(request, 'login.html', context)
+
+
+@login_required
+def logoutpage(request):
+    logout(request)
+    return redirect('loginpage')
 
 # * ===== other api (for js fetch) ========================
 # def get_stars_data(request):

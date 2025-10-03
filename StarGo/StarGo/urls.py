@@ -29,6 +29,9 @@ urlpatterns = [
     path('stars/', include('app.urls_stars')),
     path('places/', include('app.urls_places')),
     path('profile/', include('app.urls_profile')),
+
+    path('login/', views.loginpage, name='loginpage'),
+    path('logout/', views.logoutpage, name='logoutpage'),
 ]
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
