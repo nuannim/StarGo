@@ -4,13 +4,17 @@ from django.shortcuts import render, redirect
 from django.db.models.functions import Concat
 from django.db.models import Value
 
-from django.contrib import messages
 from django.views import View
+from django.contrib.auth.models import User, Group
 
+
+from django.contrib import messages
 from django.contrib.auth import logout, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+# from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
+
 
 from app.forms import *
 from .models import *
@@ -224,6 +228,37 @@ def loginpage(request):
 def logoutpage(request):
     logout(request)
     return redirect('loginpage')
+
+# * ===== Create Account ========================
+def registerpage(request):
+    if request.method == 'GET':
+        form = CustomUserCreationForm()
+    else:
+        form = CustomUserCreationForm(request.POST)
+        with transaction.atomic():
+        
+            if form.is_valid():
+                user = form.save()
+                usergroup = Group.objects.get(name='user')
+                user.groups.add(usergroup)
+                
+                Users.objects.create(
+                    auth_user=user,
+                )
+
+                login(request, user)
+                # messages.success(request, "Registration successful." )
+
+
+                return redirect('places')
+            messages.error(request, "Unsuccessful registration. Invalid information.")
+
+    context = {
+        'form': form
+    }
+
+    return render (request, 'registerpage.html', context)
+
 
 # * ===== other api (for js fetch) ========================
 # def get_stars_data(request):

@@ -31,3 +31,9 @@ SELECT setval(
   COALESCE(MAX(id), 0) + 1,
   false
 ) FROM app_groups;
+
+SELECT setval(
+  pg_get_serial_sequence('auth_user', 'id'),
+  COALESCE(MAX(id), 0) + 1,
+  false
+) FROM auth_user;
