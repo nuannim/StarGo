@@ -3,18 +3,16 @@ from django.shortcuts import render, redirect
 
 from django.db.models.functions import Concat
 from django.db.models import Value
+from django.db import transaction
 
 from django.views import View
 from django.contrib.auth.models import User, Group
 
-
 from django.contrib import messages
-from django.contrib.auth import logout, login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import logout, login, update_session_auth_hash
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 # from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
-
 
 from app.forms import *
 from .models import *
@@ -224,11 +222,10 @@ def profile_edit(request):
             try:
                 with transaction.atomic():
                     profileform.save()
-
                     profileimageform.save()
-
                     profileform = ProfileEditForm(instance=auth_user)
                     profileimageform = ProfileImageEditForm(instance=users)
+
                     return redirect('profile_edit')
 
             except Exception as e:
@@ -245,7 +242,28 @@ def profile_edit(request):
 
 @login_required
 def profile_changepassword(request):
-    return render(request, 'profile_changepassword.html')
+    if request.method == 'GET':
+        form = CustomPasswordChangeForm(user=request.user)
+    else:
+        form = CustomPasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    form1 = form.save()
+                    update_session_auth_hash(request, form1)
+                    messages.success(request, 'Your password was successfully updated!')
+
+                    return redirect('profile_changepassword')
+
+            except Exception as e:
+                print(e)
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'profile_changepassword.html', context)
+
 
 @login_required
 def profile_deleteaccount(request):
@@ -288,7 +306,6 @@ def registerpage(request):
 
             try:
                 with transaction.atomic():
-                
                     user = form.save()
                     usergroup = Group.objects.get(name='user')
                     user.groups.add(usergroup)

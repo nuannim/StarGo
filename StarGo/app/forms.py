@@ -4,7 +4,7 @@ from .models import *
 from django.forms import ModelForm, SplitDateTimeField
 from django.forms.widgets import Textarea, TextInput, SplitDateTimeWidget
 from django.core.exceptions import ValidationError
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 
 class CelebritiesForm(ModelForm):
@@ -16,7 +16,10 @@ class CelebritiesForm(ModelForm):
             'lastname': TextInput(attrs={'class': 'form-control bg-light'}),
             'nickname': TextInput(attrs={'class': 'form-control bg-light'}),
             'bands': forms.SelectMultiple(attrs={'class': 'form-control bg-light'}),
-            'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
+            # 'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
+            'imageurl': forms.FileInput(attrs={
+                'class': 'form-control bg-light', 'id': 'imageupload', 
+                'style': 'display: none;', 'accept': 'image/*'}),
         }
 
     def clean_data(self):
@@ -33,7 +36,10 @@ class PlacesForm(ModelForm):
             'name': TextInput(attrs={'class': 'form-control bg-light'}),
             'googlemaplink': TextInput(attrs={'class': 'form-control bg-light'}),
             'address': Textarea(attrs={'class': 'form-control bg-light'}),
-            'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
+            # 'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
+            'imageurl': forms.FileInput(attrs={
+                'class': 'form-control bg-light', 'id': 'imageupload', 
+                'style': 'display: none;', 'accept': 'image/*'}),
         }
 
     def clean_data(self):
@@ -103,6 +109,7 @@ class ProfileEditForm(ModelForm):
         return super().clean()
 
 
+
 # ===== 
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
@@ -131,3 +138,29 @@ class CustomUserCreationForm(UserCreationForm):
             # ถ้าเงื่อนไขผิด ให้ raise ValidationError
             raise forms.ValidationError("Username 'admin' is not allowed.")
         return cleaned_data
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    # * overwrite PasswordChangeForm
+    old_password = forms.CharField(
+        label="Old Password",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control bg-light'}
+        )
+    )
+
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control bg-light'}
+        )
+    )
+
+    new_password2 = forms.CharField(
+        label="Confirm New Password",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control bg-light'}
+        )
+    )
