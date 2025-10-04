@@ -10,12 +10,12 @@ from django.contrib.auth.models import User
 class CelebritiesForm(ModelForm):
     class Meta:
         model = Celebrities
-        fields = ['firstname', 'lastname', 'nickname', 'groups', 'imageurl']
+        fields = ['firstname', 'lastname', 'nickname', 'bands', 'imageurl']
         widgets = {
             'firstname': TextInput(attrs={'class': 'form-control bg-light'}),
             'lastname': TextInput(attrs={'class': 'form-control bg-light'}),
             'nickname': TextInput(attrs={'class': 'form-control bg-light'}),
-            'groups': forms.SelectMultiple(attrs={'class': 'form-control bg-light'}),
+            'bands': forms.SelectMultiple(attrs={'class': 'form-control bg-light'}),
             'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
         }
 
@@ -58,9 +58,9 @@ class SightingsForm(ModelForm):
         return cleaned_data
 
 
-class GroupsForm(ModelForm):
+class BandsForm(ModelForm):
     class Meta:
-        model = Groups
+        model = Bands
         fields = ['name', 'description', 'company', 'datestartgroup']
         widgets = {
             'name': TextInput(attrs={'class': 'form-control bg-light'}),
@@ -75,6 +75,35 @@ class GroupsForm(ModelForm):
         return cleaned_data
 
 
+class ProfileImageEditForm(ModelForm):
+    class Meta:
+        model = Users
+        fields = ['imageurl']
+        widgets = {
+            'imageurl': forms.FileInput(attrs={
+                'class': 'form-control bg-light', 'id': 'imageupload', 
+                'style': 'display: none;', 'accept': 'image/*'}),
+        }
+
+    def clean(self):
+        return super().clean()
+
+
+class ProfileEditForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username']
+        widgets = {
+            'first_name': TextInput(attrs={'class': 'form-control bg-light'}),
+            'last_name': TextInput(attrs={'class': 'form-control bg-light'}),
+            'username': TextInput(attrs={'class': 'form-control bg-light'}),
+        }
+
+    def clean(self):
+        return super().clean()
+
+
+# ===== 
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
         label='Password', 

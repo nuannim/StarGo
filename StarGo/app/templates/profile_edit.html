@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,37 +46,61 @@
             <!-- * 3. สร้างคอลัมน์ด้านขวา (Main Content) - กำหนดให้กว้าง 9/12 ส่วน -->
             <div class="col-md-9">
                 <!-- * สร้างแถวซ้อนข้างในอีกที เพื่อแบ่งฟอร์มกับรูปภาพ -->
-                <div class="row align-items-center p-3">
+                <!-- <div class="row align-items-center p-3"> -->
+                <form method="post" enctype="multipart/form-data" class="row align-items-center p-3">
+                {% csrf_token %}
                     <!-- * คอลัมน์สำหรับฟอร์ม -->
                     <div class="col-md-8">
                         <h2 class="fw-bold mb-4">Edit Profile</h2>
-                        <form>
-                            <div class="mb-3">
-                                <label for="firstName" class="form-label fs-5">First name</label>
-                                <input type="text" class="form-control form-control-lg bg-light" id="firstName">
-                            </div>
-                            <div class="mb-3">
-                                <label for="lastName" class="form-label fs-5">Last name</label>
-                                <input type="text" class="form-control form-control-lg bg-light" id="lastName">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label fs-5">Email</label>
-                                <input type="email" class="form-control form-control-lg bg-light" id="email">
-                            </div>
-                            <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button>
-                        </form>
+                        <!-- <form style="width: 80%;"> -->
+                        <div class="mb-3" style="width: 80%;">
+                            <label for="firstName" class="form-label fs-5">First name</label>
+                            <!-- <input type="text" class="form-control bg-light" id="firstName"> -->
+                            {{profileform.first_name}}
+                        </div>
+                        <div class="mb-3" style="width: 80%;">
+                            <label for="lastName" class="form-label fs-5">Last name</label>
+                            <!-- <input type="text" class="form-control bg-light" id="lastName"> -->
+                            {{profileform.last_name}}
+                        </div>
+                        <div class="mb-3" style="width: 80%;">
+                            <label for="username" class="form-label fs-5">Username</label>
+                            <!-- <input type="username" class="form-control bg-light" id="username"> -->
+                            {{profileform.username}}
+                        </div>
+                        <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button>
+                        <!-- </form> -->
                     </div>
 
                     <!-- * คอลัมน์สำหรับรูปภาพ -->
-                    <div class="col-md-4 d-flex justify-content-center" style="border:none black 1px">
+                    <div class="col-md-4 d-flex flex-column align-items-center" style="border:none black 1px">
                         <!-- * ทำให้รูปเป็นวงกลมและ responsive -->
-                        <img src="/static/test_profile.png" alt="Profile Picture" class="img-fluid rounded-circle w-75">
+                        {% if users.imageurl %} 
+                        <img src="{{ users.imageurl.url }}" alt="big-profile" style="aspect-ratio: 1/1; object-fit: cover;" class="img-fluid rounded-circle w-75 m-3">
+                        {% else %}
+                        <img src="{% static 'default-profile.png'%}" alt="big-profile" style="aspect-ratio: 1/1; object-fit: cover;" class="img-fluid rounded-circle w-75 m-3">
+                        {% endif %}
+                        <!-- <img src="/static/test_profile.png" alt="Profile Picture" class="img-fluid rounded-circle w-75"> -->
                         
                         <!-- ! โอ้ย ทำยังไงให้ icon ไปข้างล่างเนี่ย -->
-                        <i class="bi bi-pencil-square fs-4"></i>
-                    </div>
+                        <!-- <i class="bi bi-pencil-square fs-4"></i> -->
 
-                </div>
+                        <!-- <input type="file" id="upload-photo" name="profile_image" accept="image/*" style="display: none;"> -->
+                        {{profileimageform.imageurl}}
+                        <label for="imageupload" 
+                            class="btn btn-link p-0"
+                            style="cursor: pointer; color: #0d6efd; text-decoration: underline;">
+                            Upload a photo
+                        </label>
+
+                        <button type="submit" name="action" value="remove_photo" 
+                            class="btn btn-link p-0" style="text-decoration: underline; cursor: pointer;">
+                            Remove photo
+                        </button>
+
+                    </div>
+                <!-- </div> -->
+                </form>
             </div>
 
         </div>
@@ -82,6 +108,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    
+    <script>
+    document.getElementById("imageupload").onchange = function() {
+        this.form.submit();
+    };
+    </script>
+
 </body>
 
 </html>

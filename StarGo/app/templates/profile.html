@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,13 +20,17 @@
         <div class="container d-flex flex-column align-items-center position-relative">
             <h1 class="m-3">Profile</h1>
             <!-- <img src="\static\test_profile.png" alt="stargologo" class="w-25 m-3"> -->
-            <img src="/static/test_profile.png" alt="big-profile" class="img-fluid rounded-circle w-25 m-3">
+            {% if users.imageurl %}
+            <img src="{{ users.imageurl.url }}" alt="big-profile" style="aspect-ratio: 1/1; object-fit: cover;" class="img-fluid rounded-circle w-25 m-3">
+            {% else %}
+            <img src="{% static 'default-profile.png'%}" alt="big-profile" style="aspect-ratio: 1/1; object-fit: cover;" class="img-fluid rounded-circle w-25 m-3">
+            {% endif %}
 
             <!-- username -->
-            <h3 class="m-3">@kanigii_._</h3>
-            
+            <h3 class="m-3">{{ auth_user.username }}</h3>
+
             <!-- first name + last name -->
-            <p class="fs-4 ">Vitita Srasreesom</p>
+            <p class="fs-4 ">{{auth_user.first_name}} {{auth_user.last_name}}</p>
         </div>
     </section>
 

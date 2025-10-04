@@ -33,19 +33,18 @@ def sightings(request, celebrities_id):
     else:
         form = SightingsForm(request.POST)
         if form.is_valid():
-            sighting = form.save(commit=False)
-            sighting.celebrities = Celebrities.objects.get(id=celebrities_id)
-            # sighting.addby_users = request.user
-            sighting.save()
-
-            # print(sighting.places)
-            # print(sighting.arrivaldate)
-            # print(sighting.celebrities)
-            # print(sighting.addby_users)
-
-            form = SightingsForm()
-            return redirect('sightings', celebrities_id=celebrities_id)
-        
+            try:
+                with transaction.atomic():
+                    sighting = form.save(commit=False)
+                    sighting.celebrities = Celebrities.objects.get(id=celebrities_id)
+                    myuser = User.objects.get(username=request.user)
+                    sighting.addby_auth_user = myuser                    
+                    sighting.save()
+                    
+                    form = SightingsForm()
+                    return redirect('sightings', celebrities_id=celebrities_id)
+            except Exception as e:
+                print(e)
     context = {
         'form': form,
         'celebrities_id': celebrities_id,
@@ -75,30 +74,30 @@ def stars(request):
 
 @login_required
 def stars_addnewstar(request):
-    # groups = Groups.objects.all()
 
     if request.method == 'GET':
         form = CelebritiesForm()
 
-
     else:
         form = CelebritiesForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            form = CelebritiesForm()
-            return redirect('stars')
-
+            try:
+                with transaction.atomic():
+                    waitforcommit = form.save(commit=False)
+                    myuser = User.objects.get(username=request.user)
+                    waitforcommit.addby_auth_user = myuser
+                    waitforcommit.save()
+                    
+                    form = CelebritiesForm()
+                    return redirect('stars')
+            except Exception as e:
+                print(e)
     context = {
         'form': form,
-        # 'groups': groups,
     }
 
 
     return render(request, 'stars_addnewstar.html', context)
-
-
-# def stars_sortby(request):
-#     return render(request, 'stars_sortby.html')
 
 
 @login_required
@@ -111,16 +110,11 @@ def stars_sortby(request, celebrities_id):
         'id',
         'name',
     ))
-    # print(star_data)
 
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
-    # print('wheretogo:', wheretogo)
 
-    # print('celebrities.groups.name:', celebrities.groups.all())
-    # for i in celebrities.groups.all():
-    #     print(i.name)
 
     context = {
         'star_data': star_data,
@@ -134,7 +128,6 @@ def stars_sortby(request, celebrities_id):
 @login_required
 def places(request):
     places = Places.objects.all()
-    # print('places:', places)
     place_data = list(places.values(
         'id',
         'name'
@@ -154,10 +147,18 @@ def places_addnewplace(request):
     else:
         form = PlacesForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            form = PlacesForm()
-            return redirect('places')
+            try:
+                with transaction.atomic():
+                    waitforcommit = form.save(commit=False)
+                    myuser = User.objects.get(username=request.user)
+                    waitforcommit.addby_auth_user = myuser
+                    waitforcommit.save()
 
+                    form = PlacesForm()
+                    return redirect('places')
+                
+            except Exception as e:
+                print(e)
     context = {
         'form': form,
     }
@@ -169,7 +170,6 @@ def places_addnewplace(request):
 def places_sortby(request, places_id):
     thisplace = Places.objects.get(id=places_id)
     whocamehere = Sightings.objects.filter(places=places_id)
-    # print('whocamehere:', whocamehere)
 
     places = Places.objects.all()
     place_data = list(places.values(
@@ -188,15 +188,60 @@ def places_sortby(request, places_id):
 # * ===== Profile Views ========================
 @login_required
 def profile(request):
-    user = request.user
-    users = Users.objects.get(auth_user=user)
-    print('users:', users)
+    users = Users.objects.get(auth_user_id=request.user.id)
+    auth_user = User.objects.get(pk=request.user.id)
+    # print('requset auth_user', auth_user)
 
-    return render(request, 'profile.html')
+    context = {
+        'users': users,
+        'auth_user': auth_user,
+
+    }
+
+    return render(request, 'profile.html', context)
 
 @login_required
 def profile_edit(request):
-    return render(request, 'profile_edit.html')
+    users = Users.objects.get(auth_user_id=request.user.id)
+    # auth_user = User.objects.get(pk=request.user.id)
+    auth_user = request.user
+
+    if request.method == 'GET':
+        profileform = ProfileEditForm(instance=auth_user)
+        profileimageform = ProfileImageEditForm(instance=users)
+
+    else:
+        profileform = ProfileEditForm(request.POST, instance=auth_user)
+        profileimageform = ProfileImageEditForm(request.POST, request.FILES, instance=users)
+        print('requset files', request.FILES)
+
+        if request.POST.get('action') == 'remove_photo' and users.imageurl:
+            users.imageurl.delete(save=False)
+            users.save()
+            return redirect('profile_edit')
+
+        if profileform.is_valid() or profileimageform.is_valid():
+            try:
+                with transaction.atomic():
+                    profileform.save()
+
+                    profileimageform.save()
+
+                    profileform = ProfileEditForm(instance=auth_user)
+                    profileimageform = ProfileImageEditForm(instance=users)
+                    return redirect('profile_edit')
+
+            except Exception as e:
+                print(e)
+
+    context = {
+        'users': users,
+        'auth_user': auth_user,
+        'profileform': profileform,
+        'profileimageform': profileimageform
+    }
+
+    return render(request, 'profile_edit.html', context)
 
 @login_required
 def profile_changepassword(request):
@@ -239,22 +284,27 @@ def registerpage(request):
         form = CustomUserCreationForm()
     else:
         form = CustomUserCreationForm(request.POST)
-        with transaction.atomic():
-        
-            if form.is_valid():
-                user = form.save()
-                usergroup = Group.objects.get(name='user')
-                user.groups.add(usergroup)
+        if form.is_valid():
+
+            try:
+                with transaction.atomic():
                 
-                Users.objects.create(
-                    auth_user=user,
-                )
+                    user = form.save()
+                    usergroup = Group.objects.get(name='user')
+                    user.groups.add(usergroup)
+                    
+                    Users.objects.create(
+                        auth_user=user,
+                    )
 
-                login(request, user)
-                # messages.success(request, "Registration successful." )
+                    login(request, user)
+                    # messages.success(request, "Registration successful." )
 
 
-                return redirect('places')
+                    return redirect('places')
+            except Exception as e:
+                print(e)
+        else:
             messages.error(request, "Unsuccessful registration. Invalid information.")
 
     context = {
@@ -264,21 +314,31 @@ def registerpage(request):
     return render (request, 'registerpage.html', context)
 
 @login_required
-def groups(request):
+def bands(request):
     if request.method == 'GET':
-        form = GroupsForm()
+        form = BandsForm()
     else:
-        form = GroupsForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            form = GroupsForm()
-            return redirect('groups')
+        form = BandsForm(request.POST, request.FILES)
+        with transaction.atomic():
+            if form.is_valid():
+                groupnotsave = form.save(commit=False)
+
+                print('request.user:', request.user)
+
+                myuser = User.objects.get(username=request.user)
+                print(myuser)
+                groupnotsave.addby_auth_user = myuser
+
+                groupnotsave.save()
+
+                form = BandsForm()
+                return redirect('bands')
 
     context = {
         'form': form,
     }
 
-    return render(request, 'groups.html', context)
+    return render(request, 'bands.html', context)
 
 
 # * ===== other api (for js fetch) ========================
