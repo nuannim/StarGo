@@ -267,6 +267,16 @@ def profile_changepassword(request):
 
 @login_required
 def profile_deleteaccount(request):
+    if request.method == 'POST':
+        myuser = request.user
+        myuser.is_active = False
+        myuser.save()
+        logout(request)
+
+        messages.success(request, 'Your account has been deleted')
+
+        return redirect('loginpage')
+
     return render(request, 'profile_deleteaccount.html')
 
 

@@ -48,7 +48,8 @@
                     <div class="col-md-8">
                         <h2 class="fw-bold mb-4">Delete account</h2>
                         <p class="fs-5">are you sure you want to delete account?</p>
-                        <form>
+                        <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
                             <button type="submit" class="btn btn-lg btn-danger mt-4">Confirm delete account</button>
                         </form>
                     </div>
