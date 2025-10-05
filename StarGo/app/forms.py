@@ -19,7 +19,7 @@ class CelebritiesForm(ModelForm):
             # 'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
             'imageurl': forms.FileInput(attrs={
                 'class': 'form-control bg-light', 'id': 'imageupload', 
-                'style': 'display: none;', 'accept': 'image/*'}),
+                'accept': 'image/*'}),
         }
 
     def clean_data(self):
@@ -39,7 +39,7 @@ class PlacesForm(ModelForm):
             # 'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
             'imageurl': forms.FileInput(attrs={
                 'class': 'form-control bg-light', 'id': 'imageupload', 
-                'style': 'display: none;', 'accept': 'image/*'}),
+                'accept': 'image/*'}),
         }
 
     def clean_data(self):

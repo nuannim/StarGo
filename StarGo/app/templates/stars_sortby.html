@@ -14,7 +14,11 @@
 </head>
 
 <body>
-    {% include 'nav.html' %}
+    {% if perms.app.delete_celebrities %}
+        {% include 'nav_admin.html' %}
+    {% else %}
+        {% include 'nav.html' %}
+    {% endif %}
 
     <section class="d-flex flex-column justify-content-start m-3" style="border: none solid orange; height: auto;">
         <div class="container d-flex flex-column align-items-center position-relative my-5">
@@ -52,9 +56,7 @@
                             <!-- <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button> -->
 
                         <!-- <button class="btn btn-group-lg">add new visited place</button> -->
-
                     </div>
-
             </div>
 
         </div>

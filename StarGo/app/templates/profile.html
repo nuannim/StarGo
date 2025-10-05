@@ -14,7 +14,11 @@
 </head>
 
 <body>
-    {% include 'nav.html' %}
+    {% if perms.app.delete_celebrities %}
+        {% include 'nav_admin.html' %}
+    {% else %}
+        {% include 'nav.html' %}
+    {% endif %}
 
     <section class="d-flex flex-column justify-content-center" style="border: none solid orange; height: 95vh; margin: 1%;">
         <div class="container d-flex flex-column align-items-center position-relative">
