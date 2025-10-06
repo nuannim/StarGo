@@ -42,7 +42,11 @@
             <div class="d-flex flex-column align-items-center mt-3">
                 <h1>{{thisplace.name}}</h1>
                 <p class="fs-4">{{thisplace.address}}</p>
-                <a href="{{ thisplace.googlemaplink }}" style="background-color: #FFBC00;" class="btn btn-lg">Google Maps Link</a>
+                <div>
+                    <!-- <a href="">Add Sighting</a> -->
+                    <a href="{% url 'sightings' %}?place_id={{ thisplace.id }}" style="background-color: #FFBC00;" class="btn btn-lg">Add Who just come</a>
+                    <a href="{{ thisplace.googlemaplink }}" style="background-color: #FFBC00;" class="btn btn-lg">Google Maps Link</a>
+                </div>
             </div>
         </div>
     </section>

@@ -52,7 +52,8 @@
                             {% endfor %}
                             )</p>
                         {% endif %}
-                        <a href="{% url 'sightings' celebrities_id=celebrities.id %}" style="background-color: #FFBC00;" class="btn btn-lg">add new visited place</a>
+                        <!-- <a href="{% url 'sightings_stars' celebrities_id=celebrities.id %}" style="background-color: #FFBC00;" class="btn btn-lg">add new visited place</a> -->
+                        <a href="{% url 'sightings' %}?celebrities_id={{ celebrities.id }}" style="background-color: #FFBC00;" class="btn btn-lg">Add sightings</a>
                             <!-- <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button> -->
 
                         <!-- <button class="btn btn-group-lg">add new visited place</button> -->

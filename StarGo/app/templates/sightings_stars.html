@@ -25,17 +25,7 @@
             <h1>Where just {{ celebrities.nickname }} went</h1>
             {% csrf_token %}
 
-            {% if getsource %}
-                <input type="hidden" name="source" value="{{ getsource }}">
-                <!-- * ใช้วิธีส่งข้อมูลไว้ใน input ที๋ซ่อนอยู่ ให้รู้ว่าส่งข้อมูลเสร็จจะ redirect ไปหน้าไหน ไอ้นั่นมาก -->
-            {% endif %}
-
             <div class="d-flex gap-5 w-100 justify-content-center">
-                <div class="w-25 ">
-                    <label for="Celebrities" class="form-label">Celebrities</label>
-                    <!-- <input type="text" name="" id="" class="form-control bg-light"> -->
-                    {{ form.celebrities }}
-                </div>
                 <div class="w-25 ">
                     <label for="places" class="form-label">Places</label>
                     <!-- <input type="text" name="" id="" class="form-control bg-light"> -->
@@ -54,7 +44,7 @@
             <!-- <div class="container d-flex flex-column align-items-center position-relative my-5 gap-3 border-top"> -->
 
             <div>
-                <!-- <a href="" class="btn btn-lg mt-4 bg-secondary" style="color: white;"></a> -->
+                <a href="{% url 'stars_sortby' celebrities_id=celebrities_id %}" class="btn btn-lg mt-4 bg-secondary" style="color: white;">Back</a>
                 <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;" onclick="">Confirm</button>
             </div>
         </form>

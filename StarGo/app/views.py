@@ -23,7 +23,7 @@ def index(request):
     return render(request, 'index.html')
 
 @login_required
-def sightings(request, celebrities_id):
+def sightings_stars(request, celebrities_id):
     celebrities = Celebrities.objects.get(id=celebrities_id)
 
     if request.method == 'GET':
@@ -40,7 +40,7 @@ def sightings(request, celebrities_id):
                     sighting.save()
                     
                     form = SightingsForm()
-                    return redirect('sightings', celebrities_id=celebrities_id)
+                    return redirect('sightings_stars', celebrities_id=celebrities_id)
             except Exception as e:
                 print(e)
     context = {
@@ -49,7 +49,86 @@ def sightings(request, celebrities_id):
         'celebrities': celebrities,
     }
 
+    return render(request, 'sightings_stars.html', context)
+
+
+@login_required
+def sightings(request):
+    # if request.method == 'GET':
+    #     form = SightingsForm2()
+
+    getsource = None
+
+    if request.method == 'GET':
+        # สร้าง Dictionary ว่างๆ เพื่อเก็บค่าเริ่มต้น
+        initial_data = {}
+
+        # ตรวจสอบว่ามี star_id ส่งมาใน URL หรือไม่
+        celebritiesIdFromURL = request.GET.get('celebrities_id')
+        if celebritiesIdFromURL:
+            # ถ้ามี, กำหนดค่าเริ่มต้นให้กับฟิลด์ 'celebrities'
+            initial_data['celebrities'] = celebritiesIdFromURL
+            getsource = 'celebrities'
+
+        # ตรวจสอบว่ามี place_id ส่งมาใน URL หรือไม่
+        placeIdFromURL = request.GET.get('place_id')
+        if placeIdFromURL:
+            # ถ้ามี, กำหนดค่าเริ่มต้นให้กับฟิลด์ 'places'
+            initial_data['places'] = placeIdFromURL
+            getsource = 'places'
+
+        # สร้างฟอร์มโดยส่ง initial_data เข้าไป
+        # Django จะนำค่า id ไปเลือก option ใน dropdown ให้เองอัตโนมัติ
+        form = SightingsForm2(initial=initial_data)
+    else:
+        form = SightingsForm2(request.POST)
+
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    sight = form.save(commit=False)
+                    # myuser = User.objects.get(username=request.user)
+                    # sight.addby_auth_user = myuser
+                    sight.addby_auth_user = request.user
+                    sight.save()
+
+                    # form = SightingsForm2()
+
+                    postsource = request.POST.get('source')
+
+                    if postsource == 'celebrities':
+                        c_id = form.cleaned_data['celebrities'].id
+                        return redirect('stars_sortby', celebrities_id=c_id)
+                    
+                    elif postsource == 'places':
+                        p_id = form.cleaned_data['places'].id
+                        return redirect('places_sortby', places_id=p_id)
+                    
+                    return redirect('places')
+
+            except Exception as e:
+                print('error from def sightings POST method:', e)
+
+    context = {
+        'form': form,
+        'getsource': getsource
+    }
     return render(request, 'sightings.html', context)
+
+# @login_required
+# def sightings_places(request, places_id):
+#     places = Places.objects.get(id=places_id)
+
+#     if request.method == 'GET':
+#         form = SightingsForm()
+#     else:
+#         form = SightingsForm(request.POST)
+#         if form.is_valid():
+#             try:
+#                 with transaction.atomic():
+#                     sighting = form.save(commit=False)
+#                     sighting.celebrities
+    
 
 # * ===== Stars Views ===========================
 
