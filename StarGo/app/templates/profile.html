@@ -26,9 +26,9 @@
                 <div class="d-flex flex-column align-items-center text-center">
                     <!-- Profile Image -->
                     {% if users.imageurl %}
-                    <img src="{{ users.imageurl.url }}" alt="Profile" class="rounded-circle img-fluid border" style="max-width: 260px;">
+                    <img src="{{ users.imageurl.url }}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
                     {% else %}
-                    <img src="{% static 'default-profile.png'%}" alt="Profile" class="rounded-circle img-fluid border" style="max-width: 260px;">
+                    <img src="{% static 'default-profile.png'%}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
                     {% endif %}
 
                     <!-- Name and Username -->
