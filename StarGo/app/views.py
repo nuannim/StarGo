@@ -56,7 +56,7 @@ def sightings(request, celebrities_id):
 @login_required
 def stars(request):
     stars_queryset = Celebrities.objects.annotate(
-        name=Concat('firstname', Value(' '), 'lastname')
+        name=Concat('firstname', Value(' '), 'lastname', Value(' ('), 'nickname', Value(')'))
     )
 
     star_data = list(stars_queryset.values(
@@ -69,6 +69,7 @@ def stars(request):
     }
 
     return render(request, 'stars.html', context)
+
 
 @login_required
 def stars_addnewstar(request):
@@ -102,7 +103,7 @@ def stars_addnewstar(request):
 def stars_sortby(request, celebrities_id):
     # * ก้อปมาจาก def stars()
     stars_queryset = Celebrities.objects.annotate(
-        name=Concat('firstname', Value(' '), 'lastname')
+        name=Concat('firstname', Value(' '), 'lastname', Value(' ('), 'nickname', Value(')'))
     )
     star_data = list(stars_queryset.values(
         'id',
