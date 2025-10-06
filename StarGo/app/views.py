@@ -189,16 +189,28 @@ def places_sortby(request, places_id):
 @login_required
 def profile(request):
     users = Users.objects.get(auth_user_id=request.user.id)
-    auth_user = User.objects.get(pk=request.user.id)
-    # print('requset auth_user', auth_user)
+    # auth_user = User.objects.get(pk=request.user.id)
+    auth_user = request.user
+
+    sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id)
+    places = Places.objects.filter(addby_auth_user_id=request.user.id)
+    celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
+
+    print('userid:', request.user.id)
+    print('sightings:', sightings)
+    print('places:', places)
+    print('celebrities:', celebrities)
 
     context = {
         'users': users,
         'auth_user': auth_user,
-
+        'sightings': sightings,
+        'places': places,
+        'celebrities': celebrities,
     }
 
     return render(request, 'profile.html', context)
+
 
 @login_required
 def profile_edit(request):
