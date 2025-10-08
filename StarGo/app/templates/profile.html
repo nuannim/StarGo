@@ -124,6 +124,7 @@
 
                         {% for sight in sightings %}
                         <!-- ! เดี๋ยวมาเติมให้แก้ไขได้ -->
+                        <a href="{% url 'sightings_edit' sightings_id=sight.id %}" class="link-primary text-decoration-none text-black">
                             <div class="col">
                                 <div class="card h-100 shadow-sm">
                                     <div class="card-body text-center">
@@ -139,6 +140,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </a>
                         {% endfor %}
                         <!-- <div class="col">
                             <div class="card h-100 shadow-sm">

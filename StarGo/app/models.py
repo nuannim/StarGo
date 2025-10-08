@@ -63,4 +63,5 @@ class Sightings(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Sighting of {self.celebrities} at {self.places} on {self.arrivaldate}"
+        # return f"Sighting of {self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
+        return f"{self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"

@@ -7,6 +7,7 @@ from . import views
 
 urlpatterns = [
     path('', views.sightings, name='sightings'),
+    path('<int:sightings_id>/', views.sightings_edit, name='sightings_edit'),
 
     # * ไม่ได้ใช้แล้ว ใช้ sightings ธรรมดาแทน
     path("addnewsightings/bystars/<int:celebrities_id>", views.sightings_stars, name="sightings_stars"),

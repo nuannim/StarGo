@@ -115,6 +115,40 @@ def sightings(request):
     }
     return render(request, 'sightings.html', context)
 
+
+@login_required
+def sightings_edit(request, sightings_id):
+    sightings = Sightings.objects.get(pk=sightings_id)
+    print('sightings:', sightings)
+
+    # * เอาไว้ดัก ถ้าไม่ได้สร้าง sightings นี้ ให้ redirect ไปที่ profile
+    if sightings.addby_auth_user != request.user:
+        messages.error(request, "You do not have permission to edit that sighting.")
+        return redirect('profile') 
+
+    if request.method == 'GET':
+        form = SightingsForm2(instance=sightings)
+    else:
+        form = SightingsForm2(request.POST, instance=sightings)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    form.save()
+                    form = SightingsForm2(instance=sightings)
+
+                    return redirect('sightings_edit', sightings_id=sightings_id)
+            except Exception as e:
+                print('error from def sightings_edit POST method:', e)
+
+    context = {
+        'form': form,
+        'sightings_id': sightings_id, 
+    }
+
+    return render(request, 'sightings.html', context)
+
+
+
 # @login_required
 # def sightings_places(request, places_id):
 #     places = Places.objects.get(id=places_id)
@@ -191,7 +225,7 @@ def stars_sortby(request, celebrities_id):
 
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
-    wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('-arrivaldate')
+    wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('places', '-arrivaldate').distinct('places')
 
 
     context = {
@@ -249,7 +283,7 @@ def places_addnewplace(request):
 @login_required
 def places_sortby(request, places_id):
     thisplace = Places.objects.get(id=places_id)
-    whocamehere = Sightings.objects.filter(places=places_id)
+    whocamehere = Sightings.objects.filter(places=places_id).order_by('celebrities').distinct('celebrities')
 
     places = Places.objects.all()
     place_data = list(places.values(
@@ -272,7 +306,7 @@ def profile(request):
     # auth_user = User.objects.get(pk=request.user.id)
     auth_user = request.user
 
-    sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id)
+    sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id).distinct()
     places = Places.objects.filter(addby_auth_user_id=request.user.id)
     celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
 

@@ -78,6 +78,16 @@ class SightingsForm2(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         # Perform custom validation here if needed
+
+        c = cleaned_data.get('celebrities')
+        p = cleaned_data.get('places')
+
+        if c and p:
+            if Sightings.objects.filter(celebrities=c, places=p).exists():
+                raise forms.ValidationError(
+                    "this sighting has been added before"
+                )
+
         return cleaned_data
 
 

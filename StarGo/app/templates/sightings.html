@@ -51,6 +51,15 @@
             <div class="d-flex gap-5 w-100 justify-content-center">
 
             </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
             <!-- <div class="container d-flex flex-column align-items-center position-relative my-5 gap-3 border-top"> -->
 
             <div>
