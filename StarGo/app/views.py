@@ -302,13 +302,17 @@ def places_sortby(request, places_id):
 # * ===== Profile Views ========================
 @login_required
 def profile(request):
-    users = Users.objects.get(auth_user_id=request.user.id)
-    # auth_user = User.objects.get(pk=request.user.id)
     auth_user = request.user
+    users = Users.objects.get(auth_user=auth_user)
+    # users = Users.objects.get(auth_user = request.user)
+    # auth_user = User.objects.get(pk=request.user.id)
 
-    sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id).distinct()
-    places = Places.objects.filter(addby_auth_user_id=request.user.id)
-    celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
+    sightings = Sightings.objects.filter(addby_auth_user=auth_user).distinct()
+    places = Places.objects.filter(addby_auth_user=auth_user)
+    celebrities = Celebrities.objects.filter(addby_auth_user=auth_user)
+    # sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id).distinct()
+    # places = Places.objects.filter(addby_auth_user_id=request.user.id)
+    # celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
 
     print('userid:', request.user.id)
     print('sightings:', sightings)
@@ -324,6 +328,30 @@ def profile(request):
     }
 
     return render(request, 'profile.html', context)
+
+
+# @login_required
+def profile_share(request, username):
+    user = User.objects.get(username=username)
+    users = Users.objects.get(auth_user_id=user.id)
+
+    sightings = Sightings.objects.filter(addby_auth_user=user).distinct()
+    places = Places.objects.filter(addby_auth_user=user)
+    celebrities = Celebrities.objects.filter(addby_auth_user=user)
+
+    print('user:', user)
+    print('users:', users)
+
+    context = {
+        'users': users,
+        'auth_user': user,
+        'sightings': sightings,
+        'places': places,
+        'celebrities': celebrities,
+    }
+
+    return render(request, 'profile_share.html', context)
+
 
 
 @login_required
