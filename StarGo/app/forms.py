@@ -27,6 +27,26 @@ class CelebritiesForm(ModelForm):
         # Perform custom validation here if needed
         return cleaned_data
 
+    def clean(self):
+        cleaned_data = super().clean()
+        firstname = (cleaned_data.get('firstname') or '').strip()
+        lastname = (cleaned_data.get('lastname') or '').strip()
+        nickname = (cleaned_data.get('nickname') or '').strip()
+
+        if firstname and lastname and nickname:
+            qs = Celebrities.objects.filter(
+                firstname__iexact=firstname,
+                lastname__iexact=lastname,
+                nickname__iexact=nickname,
+            )
+            if self.instance and getattr(self.instance, 'pk', None):
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise ValidationError('A celebrity with the same first name, last name and nickname already exists.')
+
+        return cleaned_data
+
 
 class PlacesForm(ModelForm):
     class Meta:
@@ -44,7 +64,26 @@ class PlacesForm(ModelForm):
 
     def clean_data(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
+
+        return cleaned_data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        raw_name = cleaned_data.get('name') or ''
+        name = raw_name.strip().lower()
+
+        if name:
+            qs = Places.objects.filter(name__iexact=name)
+            if self.instance and getattr(self.instance, 'pk', None):
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                # Raise a form-level validation error so it appears in non-field errors alert
+                raise ValidationError('A place with the same name already exists.')
+
+            # put the normalized name back so it will be saved in lowercase
+            cleaned_data['name'] = name
+
         return cleaned_data
 
 
@@ -77,7 +116,6 @@ class SightingsForm2(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
 
         # c = cleaned_data.get('celebrities')
         # p = cleaned_data.get('places')
@@ -108,7 +146,7 @@ class BandsForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
+
         return cleaned_data
 
 
@@ -163,7 +201,6 @@ class CustomUserCreationForm(UserCreationForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
         username = cleaned_data.get("username")
         if username and username.lower() == "admin":
             # ถ้าเงื่อนไขผิด ให้ raise ValidationError

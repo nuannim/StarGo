@@ -26,11 +26,24 @@
             <h1>Add new place</h1>
             {% csrf_token %}
 
+            <!-- {# non-field errors (form-level) #} -->
+            {% if form.non_field_errors %}
+                <div class="w-75 alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
             <div class="d-flex gap-5 w-100 justify-content-center">
                 <div class="w-25 ">
                     <label for="name" class="form-label">Place name</label>
                     <!-- <input type="text" name="" id="" class="form-control bg-light"> -->
                     {{ form.name }}
+                    <!-- ถ้าอยากให้อันนี้แสดงผลต้องไปตั้งส่ง error ใน form ด้วย -->
+                    <!-- {% if form.name.errors %}
+                        <div class="text-danger small">
+                            {% for error in form.name.errors %}{{ error }}<br>{% endfor %}
+                        </div>
+                    {% endif %} -->
                 </div>
                 <div class="w-25 ">
                     <label for="googlemapLink" class="form-label">Google Maps link</label>
