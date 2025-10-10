@@ -50,6 +50,9 @@ class Places(models.Model):
     imageurl = models.FileField(upload_to='images/', blank=True, null=True) # * ถ้า upload_to='' จะไปเก็บใน media เลย
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # latitude = models.DecimalField(max_digits=12, decimal_places=9, null=True, blank=True)
+    # longtitude = models.DecimalField(max_digits=12, decimal_places=9, null=True, blank=True)
+
     def __str__(self):
         return self.name
 
