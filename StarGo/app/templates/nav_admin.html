@@ -24,7 +24,11 @@
             <div class="dropdown">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {% if user.users.imageurl %}
+                    {% if request_user_image %}
+                    <img src="{{ request_user_image.url }}" alt="stargologo" width="50vw" height="50vw" class="rounded-circle object-fit-cover">
+                    {% else %}
                     <img src="{{ user.users.imageurl.url }}" alt="stargologo" width="50vw" height="50vw" class="rounded-circle object-fit-cover">
+                    {% endif %}
                     {% else %}
                     <img src="{% static 'default-profile.png' %}" alt="stargologo" width="50vw" height="50vw" class="rounded-circle object-fit-cover">
                     {% endif %}

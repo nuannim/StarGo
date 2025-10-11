@@ -26,7 +26,11 @@
                 <div class="d-flex flex-column align-items-center text-center">
                     <!-- Profile Image -->
                     {% if users.imageurl %}
+                    {% if users.imageurl %}
                     <img src="{{ users.imageurl.url }}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
+                    {% else %}
+                    <img src="{% static 'default-profile.png' %}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
+                    {% endif %}
                     {% else %}
                     <img src="{% static 'default-profile.png'%}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
                     {% endif %}
@@ -55,7 +59,11 @@
                                     <div class="card-body text-center">
                                         <div class="rounded w-100 text-center" style="height: 150px;">
                                         {% if celeb.imageurl %}
+                                            {% if celeb.imageurl %}
                                             <img src="{{ celeb.imageurl.url }}" alt="" class="w-100">
+                                            {% else %}
+                                            <img src="{% static 'default-profile.png' %}" alt="" class="w-100">
+                                            {% endif %}
                                         {% else %}
                                             <img src="{% static 'default-place.png'%}" alt="" class="w-100">
                                         {% endif %}
@@ -101,7 +109,11 @@
                                     <div class="card-body text-center">
                                         <div class="rounded w-100 text-center" style="height: 150px;">
                                         {% if place.imageurl %}
+                                            {% if place.imageurl %}
                                             <img src="{{ place.imageurl.url }}" alt="" class="w-100">
+                                            {% else %}
+                                            <img src="{% static 'default-place.png' %}" alt="" class="w-100">
+                                            {% endif %}
                                         {% else %}
                                             <img src="{% static 'default-place.png'%}" alt="" class="w-100">
                                         {% endif %}
@@ -130,7 +142,11 @@
                                     <div class="card-body text-center">
                                         <div class="rounded w-100 text-center" style="height: 150px;">
                                         {% if sight.places.imageurl %}
+                                            {% if sight.places.imageurl %}
                                             <img src="{{ sight.places.imageurl.url }}" alt="" class="w-100">
+                                            {% else %}
+                                            <img src="{% static 'default-place.png' %}" alt="" class="w-100">
+                                            {% endif %}
                                         {% else %}
                                             <img src="{% static 'default-place.png'%}" alt="" class="w-100">
                                         {% endif %}

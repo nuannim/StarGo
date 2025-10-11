@@ -17,10 +17,62 @@ from django.contrib.auth.decorators import login_required
 from app.forms import *
 from .models import *
 
+import requests
+import os
+
+STORAGE_API_URL = os.environ.get("STORAGE_API_URL", "http://127.0.0.1:8001")
+# Normalize STORAGE API base: ensure it points to the storage app root that contains the API
+# storage_microservice mounts its app under /api/, so prefer that unless caller already included it.
+if STORAGE_API_URL.endswith('/'):
+    STORAGE_API_URL = STORAGE_API_URL[:-1]
+if '/api' not in STORAGE_API_URL:
+    STORAGE_API_BASE = STORAGE_API_URL + '/api'
+else:
+    STORAGE_API_BASE = STORAGE_API_URL
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
+
+
+# small helper used to adapt model instances so templates that call <obj>.imageurl.url
+# will get an absolute URL when the stored value is an absolute URL from the storage microservice.
+class URLHolder:
+    def __init__(self, url):
+        self.url = url
+
+
+def ensure_image_url(obj):
+    """If obj.imageurl contains an absolute URL (or a name that starts with http), replace
+    obj.imageurl with a tiny object that exposes a .url attribute pointing to that absolute URL.
+    This keeps templates that call `{{ instance.imageurl.url }}` working without changing models.
+    """
+    if not obj:
+        return
+    try:
+        val = getattr(obj, 'imageurl')
+    except Exception:
+        return
+    if not val:
+        return
+
+    # If it's already a URLHolder, leave it
+    if isinstance(val, URLHolder):
+        return
+
+    # If it's a plain string (unlikely for FieldFile access, but handle it)
+    if isinstance(val, str):
+        if val.startswith('http://') or val.startswith('https://'):
+            obj.imageurl = URLHolder(val)
+        return
+
+    # FieldFile-like object: check .name for an absolute URL
+    try:
+        name = getattr(val, 'name', None)
+        if isinstance(name, str) and (name.startswith('http://') or name.startswith('https://')):
+            obj.imageurl = URLHolder(name)
+    except Exception:
+        return
 
 @login_required
 def sightings_stars(request, celebrities_id):
@@ -195,15 +247,30 @@ def stars_addnewstar(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    waitforcommit = form.save(commit=False)
+                    celebrity = form.save(commit=False)
                     myuser = User.objects.get(username=request.user)
-                    waitforcommit.addby_auth_user = myuser
-                    waitforcommit.save()
+                    celebrity.addby_auth_user = myuser
+
+                    # Handle image upload to storage-microservice
+                    if 'imageurl' in request.FILES:
+                        image_file = request.FILES['imageurl']
+                        files = {'file': (image_file.name, image_file.read(), image_file.content_type)}
+                        response = requests.post(f"{STORAGE_API_BASE}/images/upload/", files=files)
+                        if response.status_code == 201:
+                            # Save the image URL from the microservice
+                            celebrity.imageurl = response.json().get('url')
+                        else:
+                            # Handle upload error
+                            messages.error(request, f"Failed to upload image: {response.text}")
+                            raise Exception("Image upload failed")
+                    
+                    celebrity.save()
                     
                     form = CelebritiesForm()
                     return redirect('stars')
             except Exception as e:
                 print(e)
+                messages.error(request, f"An error occurred: {e}")
     context = {
         'form': form,
     }
@@ -225,6 +292,7 @@ def stars_sortby(request, celebrities_id):
 
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
+    ensure_image_url(celebrities)
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('places', '-arrivaldate').distinct('places')
 
 
@@ -263,16 +331,31 @@ def places_addnewplace(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    waitforcommit = form.save(commit=False)
+                    place = form.save(commit=False)
                     myuser = User.objects.get(username=request.user)
-                    waitforcommit.addby_auth_user = myuser
-                    waitforcommit.save()
+                    place.addby_auth_user = myuser
+
+                    # Handle image upload to storage-microservice
+                    if 'imageurl' in request.FILES:
+                        image_file = request.FILES['imageurl']
+                        files = {'file': (image_file.name, image_file.read(), image_file.content_type)}
+                        response = requests.post(f"{STORAGE_API_BASE}/images/upload/", files=files)
+                        if response.status_code == 201:
+                            # Save the image URL from the microservice
+                            place.imageurl = response.json().get('url')
+                        else:
+                            # Handle upload error
+                            messages.error(request, f"Failed to upload image: {response.text}")
+                            raise Exception("Image upload failed")
+
+                    place.save()
 
                     form = PlacesForm()
                     return redirect('places')
                 
             except Exception as e:
                 print(e)
+                messages.error(request, f"An error occurred: {e}")
     context = {
         'form': form,
     }
@@ -283,6 +366,7 @@ def places_addnewplace(request):
 @login_required
 def places_sortby(request, places_id):
     thisplace = Places.objects.get(id=places_id)
+    ensure_image_url(thisplace)
     whocamehere = Sightings.objects.filter(places=places_id).order_by('celebrities').distinct('celebrities')
 
     places = Places.objects.all()
@@ -327,6 +411,13 @@ def profile(request):
         'celebrities': celebrities,
     }
 
+    # ensure any imageurl fields that contain absolute URLs are exposed as .url for templates
+    ensure_image_url(users)
+    for p in places:
+        ensure_image_url(p)
+    for c in celebrities:
+        ensure_image_url(c)
+
     return render(request, 'profile.html', context)
 
 
@@ -350,6 +441,13 @@ def profile_share(request, username):
         'celebrities': celebrities,
     }
 
+    # ensure image urls
+    ensure_image_url(users)
+    for p in places:
+        ensure_image_url(p)
+    for c in celebrities:
+        ensure_image_url(c)
+
     return render(request, 'profile_share.html', context)
 
 
@@ -357,20 +455,31 @@ def profile_share(request, username):
 @login_required
 def profile_edit(request):
     users = Users.objects.get(auth_user_id=request.user.id)
-    # auth_user = User.objects.get(pk=request.user.id)
     auth_user = request.user
 
     if request.method == 'GET':
         profileform = ProfileEditForm(instance=auth_user)
         profileimageform = ProfileImageEditForm(instance=users)
+        # expose absolute image URL for template if needed
+        ensure_image_url(users)
 
     else:
         profileform = ProfileEditForm(request.POST, instance=auth_user)
         profileimageform = ProfileImageEditForm(request.POST, request.FILES, instance=users)
-        print('requset files', request.FILES)
 
         if request.POST.get('action') == 'remove_photo' and users.imageurl:
-            users.imageurl.delete(save=False)
+            # Extract filename from URL and call delete API
+            try:
+                filename = users.imageurl.split('/')[-1]
+                response = requests.delete(f"{STORAGE_API_BASE}/images/{filename}/delete/")
+                if response.status_code not in [200, 204, 404]: # Allow 404 if file not found
+                    messages.error(request, f"Failed to delete image: {response.text}")
+                    raise Exception("Image deletion failed")
+            except Exception as e:
+                print(e)
+                messages.error(request, f"An error occurred while deleting the image: {e}")
+            
+            users.imageurl = None # Or set to a default image URL from microservice
             users.save()
             return redirect('profile_edit')
 
@@ -378,14 +487,27 @@ def profile_edit(request):
             try:
                 with transaction.atomic():
                     profileform.save()
-                    profileimageform.save()
-                    profileform = ProfileEditForm(instance=auth_user)
-                    profileimageform = ProfileImageEditForm(instance=users)
+                    
+                    # Handle image upload to storage-microservice
+                    if 'imageurl' in request.FILES:
+                        image_file = request.FILES['imageurl']
+                        files = {'file': (image_file.name, image_file.read(), image_file.content_type)}
+                        response = requests.post(f"{STORAGE_API_BASE}/images/upload/", files=files)
+                        if response.status_code == 201:
+                            # Save the image URL from the microservice
+                            users.imageurl = response.json().get('url')
+                        else:
+                            # Handle upload error
+                            messages.error(request, f"Failed to upload image: {response.text}")
+                            raise Exception("Image upload failed")
+                    
+                    users.save() # Save the user model with the new image URL
 
                     return redirect('profile_edit')
 
             except Exception as e:
                 print(e)
+                messages.error(request, f"An error occurred: {e}")
 
     context = {
         'users': users,
@@ -393,7 +515,10 @@ def profile_edit(request):
         'profileform': profileform,
         'profileimageform': profileimageform
     }
+    return render(request, 'profile_edit.html', context)
 
+    # ensure image url on render (covers POST flows that fall through)
+    ensure_image_url(users)
     return render(request, 'profile_edit.html', context)
 
 @login_required
