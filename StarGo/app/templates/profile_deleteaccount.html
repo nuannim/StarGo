@@ -17,6 +17,14 @@
             font-weight: bold;
             color: #333;
         }
+        .btn-custom {
+                transition: background-color 0.3s, transform 0.2s;
+            }
+    
+            .btn-custom:hover {
+                text-decoration: none;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            }
     </style>
 </head>
 
@@ -54,7 +62,7 @@
                         <p class="fs-5">are you sure you want to delete account?</p>
                         <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                            <button type="submit" class="btn btn-lg btn-danger mt-4">Confirm delete account</button>
+                            <button type="submit" class="btn btn-lg btn-danger mt-4 btn-custom">Confirm delete account</button>
                         </form>
                     </div>
 

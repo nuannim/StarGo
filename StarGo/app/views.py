@@ -371,9 +371,9 @@ def places(request):
 
     # profileowner = get_object_or_404(User, username=username)
 
-
     context = {
         'place_data': place_data,
+        'places': places,
     }
 
     return render(request, 'places.html', context)
@@ -532,6 +532,7 @@ def profile_share(request, username):
     sightings = Sightings.objects.filter(addby_auth_user=user).distinct()
     places = Places.objects.filter(addby_auth_user=user)
     celebrities = Celebrities.objects.filter(addby_auth_user=user)
+    yourpets = Celebrities.objects.filter(owner_id=user)
 
     print('user:', user)
     print('users:', users)
@@ -542,6 +543,7 @@ def profile_share(request, username):
         'sightings': sightings,
         'places': places,
         'celebrities': celebrities,
+        'yourpets': yourpets,
     }
 
     # ensure image urls

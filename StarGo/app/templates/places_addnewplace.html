@@ -11,6 +11,20 @@
     <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/> -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* ปุ่มสีเหลืองที่ hover จะเข้มขึ้นเล็กน้อย */
+        .btn-custom {
+            background-color: #FFBC00;
+            color: #000; /* ตัวอักษรสีดำ */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-custom:hover {
+            color: #000;
+            text-decoration: none;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        }
+    </style>
 </head>
 
 <body>
@@ -53,7 +67,7 @@
             </div>
 
             <div class="d-flex gap-5 w-100 justify-content-center">
-                <div class="w-50">
+                <div style="flex: 0 0 calc(50% + 3rem);">
                     <label for="address" class="form-label">Address</label>
                     <!-- <textarea type="text" name="" id="" class="form-control bg-light"></textarea> -->
                     {{ form.address }}
@@ -72,7 +86,7 @@
 
             <!-- <div id="map-picker" style="height: 400px; width: 100%; border-radius: 10px; margin-bottom: 20px;"></div> -->
 
-            <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button>
+            <button type="submit" class="btn btn-lg mt-4 btn-custom" style="background-color: #FFBC00;">Confirm</button>
         <!-- </div> -->
         </form>
 

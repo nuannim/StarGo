@@ -19,6 +19,18 @@
             font-weight: bold;
             color: #333;
         }
+        /* ปุ่มสีเหลืองที่ hover จะเข้มขึ้นเล็กน้อย */
+        .btn-custom {
+                background-color: #FFBC00;
+                color: #000; /* ตัวอักษรสีดำ */
+                transition: background-color 0.3s, transform 0.2s;
+            }
+    
+            .btn-custom:hover {
+                color: #000;
+                text-decoration: none;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            }
     </style>
 </head>
 
@@ -72,7 +84,7 @@
                             <!-- <input type="username" class="form-control bg-light" id="username"> -->
                             {{profileform.username}}
                         </div>
-                        <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button>
+                        <button type="submit" class="btn btn-lg mt-4 btn-custom" style="background-color: #FFBC00;">Confirm</button>
                         <!-- </form> -->
                     </div>
 
