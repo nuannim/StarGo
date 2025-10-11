@@ -26,13 +26,9 @@
                 <div class="d-flex flex-column align-items-center text-center">
                     <!-- Profile Image -->
                     {% if users.imageurl %}
-                    {% if users.imageurl %}
                     <img src="{{ users.imageurl.url }}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
                     {% else %}
                     <img src="{% static 'default-profile.png' %}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
-                    {% endif %}
-                    {% else %}
-                    <img src="{% static 'default-profile.png'%}" alt="Profile" class="rounded-circle img-fluid border object-fit-cover" style="max-width: 260px; aspect-ratio: 1/1;">
                     {% endif %}
 
                     <!-- Name and Username -->
@@ -46,30 +42,62 @@
 
             <!-- Right Content - Categories -->
             <div class="col-md-9">
+                <!-- your pets section -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+                        <h2 class="h5 fw-bold mb-0">Your Pets</h2>
+                        <a href="{% url 'stars_addnewstar' %}" class="btn btn-dark ms-3">Add your pet</a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                        <!-- Placeholder items - these would be populated from your database -->
+                        {% for pet in yourpets %}
+                        <a href="{% url 'stars_sortby' celebrities_id=pet.id %}" class="link-primary text-decoration-none text-black">
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <!-- Bootstrap square thumbnail for pet -->
+                                        <div class="ratio ratio-1x1 mx-auto bg-white rounded overflow-hidden p-2" style="width: min(170px, 28vw);">
+                                            {% if pet.imageurl %}
+                                                {% if pet.imageurl.url %}
+                                                    <img src="{{ pet.imageurl.url }}" alt="{{ pet.nickname }}" class="w-100 h-100 object-fit-cover">
+                                                {% else %}
+                                                    <img src="{{ pet.imageurl }}" alt="{{ pet.nickname }}" class="w-100 h-100 object-fit-cover">
+                                                {% endif %}
+                                            {% else %}
+                                                <img src="{% static 'default-place.png' %}" alt="No image" class="w-100 h-100 object-fit-cover">
+                                            {% endif %}
+                                        </div>
+                                        <h4 class="mt-2">{{ pet.nickname }}</h4>
+                                        <!-- <p>test</p> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
                 <!-- Celebs Section -->
                 <div class="mb-4">
                     <h2 class="h5 fw-bold pb-2 mb-3 border-bottom">Celebs you added</h2>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                        <!-- Placeholder items - these would be populated from your database -->
-
                         {% for celeb in celebrities %}
                         <a href="{% url 'stars_sortby' celebrities_id=celeb.id %}" class="link-primary text-decoration-none text-black">
                             <div class="col">
                                 <div class="card h-100 shadow-sm">
                                     <div class="card-body text-center">
-                                        <div class="rounded w-100 text-center" style="height: 150px;">
-                                        {% if celeb.imageurl %}
+                                        <div class="ratio ratio-1x1 mx-auto bg-white rounded overflow-hidden p-2" style="width: min(170px, 28vw);">
                                             {% if celeb.imageurl %}
-                                            <img src="{{ celeb.imageurl.url }}" alt="" class="w-100">
+                                                {% if celeb.imageurl.url %}
+                                                    <img src="{{ celeb.imageurl.url }}" alt="{{ celeb.nickname }}" class="w-100 h-100 object-fit-cover">
+                                                {% else %}
+                                                    <img src="{{ celeb.imageurl }}" alt="{{ celeb.nickname }}" class="w-100 h-100 object-fit-cover">
+                                                {% endif %}
                                             {% else %}
-                                            <img src="{% static 'default-profile.png' %}" alt="" class="w-100">
+                                                <img src="{% static 'default-profile.png' %}" alt="{{ celeb.nickname }}" class="w-100 h-100 object-fit-cover">
                                             {% endif %}
-                                        {% else %}
-                                            <img src="{% static 'default-place.png'%}" alt="" class="w-100">
-                                        {% endif %}
                                         </div>
-                                        <h4>{{ celeb.nickname }}</h4>
-                                        <!-- <p>test</p> -->
+                                        <h4 class="mt-2">{{ celeb.nickname }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -107,18 +135,18 @@
                             <div class="col">
                                 <div class="card h-100 shadow-sm">
                                     <div class="card-body text-center">
-                                        <div class="rounded w-100 text-center" style="height: 150px;">
-                                        {% if place.imageurl %}
+                                        <div class="ratio ratio-1x1 mx-auto bg-white rounded overflow-hidden p-2" style="width: min(170px, 28vw);">
                                             {% if place.imageurl %}
-                                            <img src="{{ place.imageurl.url }}" alt="" class="w-100">
+                                                {% if place.imageurl.url %}
+                                                    <img src="{{ place.imageurl.url }}" alt="{{ place.name }}" class="w-100 h-100 object-fit-cover">
+                                                {% else %}
+                                                    <img src="{{ place.imageurl }}" alt="{{ place.name }}" class="w-100 h-100 object-fit-cover">
+                                                {% endif %}
                                             {% else %}
-                                            <img src="{% static 'default-place.png' %}" alt="" class="w-100">
+                                                <img src="{% static 'default-place.png' %}" alt="{{ place.name }}" class="w-100 h-100 object-fit-cover">
                                             {% endif %}
-                                        {% else %}
-                                            <img src="{% static 'default-place.png'%}" alt="" class="w-100">
-                                        {% endif %}
                                         </div>
-                                        <h4>{{ place.name }}</h4>
+                                        <h4 class="mt-2">{{ place.name }}</h4>
                                         <!-- <p>test</p> -->
                                     </div>
                                 </div>
@@ -140,18 +168,18 @@
                             <div class="col">
                                 <div class="card h-100 shadow-sm">
                                     <div class="card-body text-center">
-                                        <div class="rounded w-100 text-center" style="height: 150px;">
-                                        {% if sight.places.imageurl %}
+                                        <div class="ratio ratio-1x1 mx-auto bg-white rounded overflow-hidden p-2" style="width: min(170px, 28vw);">
                                             {% if sight.places.imageurl %}
-                                            <img src="{{ sight.places.imageurl.url }}" alt="" class="w-100">
+                                                {% if sight.places.imageurl.url %}
+                                                    <img src="{{ sight.places.imageurl.url }}" alt="{{ sight.places.name }}" class="w-100 h-100 object-fit-cover">
+                                                {% else %}
+                                                    <img src="{{ sight.places.imageurl }}" alt="{{ sight.places.name }}" class="w-100 h-100 object-fit-cover">
+                                                {% endif %}
                                             {% else %}
-                                            <img src="{% static 'default-place.png' %}" alt="" class="w-100">
+                                                <img src="{% static 'default-place.png' %}" alt="{{ sight.places.name }}" class="w-100 h-100 object-fit-cover">
                                             {% endif %}
-                                        {% else %}
-                                            <img src="{% static 'default-place.png'%}" alt="" class="w-100">
-                                        {% endif %}
                                         </div>
-                                        <h4>{{ sight }}</h4>
+                                        <h4 class="mt-2">{{ sight }}</h4>
                                         <!-- <p>test</p> -->
                                     </div>
                                 </div>
@@ -188,6 +216,7 @@
                         </div> -->
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

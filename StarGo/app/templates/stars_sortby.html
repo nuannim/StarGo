@@ -41,19 +41,11 @@
                         <!-- <h1>Marmink CGM48</h1>
                         <p class="fs-4">Manichar Aimdilokwong</p> -->
                         <h1>{{ celebrities.nickname }}</h1>
-                        <!-- firstname/lastname fields removed from Celebrities model; showing nickname only -->
-                        {% if celebrities.groups.all %}
-                            <p class="fs-5">(
-                            {% for i in celebrities.groups.all %}
-                                {{ i.name }}
-                                {% if not forloop.last %}
-                                    ,
-                                {% endif %}
-                            {% endfor %}
-                            )</p>
-                        {% endif %}
                         <!-- <a href="{% url 'sightings_stars' celebrities_id=celebrities.id %}" style="background-color: #FFBC00;" class="btn btn-lg">add new visited place</a> -->
                         <a href="{% url 'sightings' %}?celebrities_id={{ celebrities.id }}" style="background-color: #FFBC00;" class="btn btn-lg">Add sightings</a>
+                        {% if can_edit %}
+                            <a href="{% url 'stars_edit' celebrities_id=celebrities.id %}" class="btn btn-outline-secondary btn-lg ms-2 m-2">Edit</a>
+                        {% endif %}
                             <!-- <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button> -->
 
                         <!-- <button class="btn btn-group-lg">add new visited place</button> -->

@@ -249,8 +249,17 @@ def stars_addnewstar(request):
             try:
                 with transaction.atomic():
                     celebrity = form.save(commit=False)
-                    myuser = User.objects.get(username=request.user)
+                    # Prefer request.user (User instance). Existing code used
+                    # User.objects.get(username=request.user) which relies on
+                    # username conversion; use request.user for clarity.
+                    myuser = request.user
                     celebrity.addby_auth_user = myuser
+
+                    # If the 'is_pet' checkbox was checked, set the owner FK
+                    # to the submitting user. Checkbox name in template is
+                    # 'is_pet' so it will appear in POST when checked.
+                    if request.POST.get('is_pet'):
+                        celebrity.owner = myuser
 
                     # Handle image upload to storage-microservice
                     if 'imageurl' in request.FILES:
@@ -303,6 +312,12 @@ def stars_sortby(request, celebrities_id):
         'wheretogo': wheretogo,
     }
 
+    # allow edit only if current user is the owner of this celebrity
+    try:
+        context['can_edit'] = (hasattr(celebrities, 'owner') and celebrities.owner_id == request.user.id)
+    except Exception:
+        context['can_edit'] = False
+
     # Normalize images for places shown in the wheretogo list so templates can call .imageurl.url
     for sight in wheretogo:
         try:
@@ -311,6 +326,40 @@ def stars_sortby(request, celebrities_id):
             print('ensure_image_url error for wheretogo place:', e)
 
     return render(request, 'stars_sortby.html', context)
+
+
+@login_required
+def stars_edit(request, celebrities_id):
+    try:
+        celebrity = Celebrities.objects.get(id=celebrities_id)
+    except Celebrities.DoesNotExist:
+        messages.error(request, 'Celebrity not found')
+        return redirect('stars')
+
+    # Only owner or staff may edit
+    if not (request.user.is_staff or (hasattr(celebrity, 'owner') and celebrity.owner_id == request.user.id)):
+        messages.error(request, 'You do not have permission to edit this item.')
+        return redirect('stars_sortby', celebrities_id=celebrities_id)
+
+    if request.method == 'GET':
+        form = CelebritiesForm(instance=celebrity)
+    else:
+        form = CelebritiesForm(request.POST, request.FILES, instance=celebrity)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    c = form.save(commit=False)
+                    # preserve owner unless explicitly changed by staff
+                    if not request.user.is_staff:
+                        c.owner = celebrity.owner
+                    c.save()
+                    messages.success(request, 'Saved')
+                    return redirect('stars_sortby', celebrities_id=celebrities_id)
+            except Exception as e:
+                messages.error(request, f'Error saving: {e}')
+
+    context = {'form': form, 'celebrity': celebrity}
+    return render(request, 'stars_edit.html', context)
 # * ===== Places Views =========================
 @login_required
 def places(request):
@@ -436,10 +485,13 @@ def profile(request):
     # places = Places.objects.filter(addby_auth_user_id=request.user.id)
     # celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
 
-    print('userid:', request.user.id)
-    print('sightings:', sightings)
-    print('places:', places)
-    print('celebrities:', celebrities)
+    yourpets = Celebrities.objects.filter(owner_id=request.user.id)
+
+    # print('userid:', request.user.id)
+    # print('sightings:', sightings)
+    # print('places:', places)
+    # print('celebrities:', celebrities)
+    # print('yourpets:', yourpets)
 
     context = {
         'users': users,
@@ -447,6 +499,7 @@ def profile(request):
         'sightings': sightings,
         'places': places,
         'celebrities': celebrities,
+        'yourpets': yourpets,
     }
 
     # ensure any imageurl fields that contain absolute URLs are exposed as .url for templates
@@ -455,6 +508,10 @@ def profile(request):
         ensure_image_url(p)
     for c in celebrities:
         ensure_image_url(c)
+
+    # also normalize owner pets so template can use pet.imageurl.url or plain URLs
+    for y in yourpets:
+        ensure_image_url(y)
 
     # Ensure place images for each sighting are normalized so template can use sight.places.imageurl.url
     for s in sightings:

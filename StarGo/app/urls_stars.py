@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
     path("", views.stars, name="stars"),
     path("<int:celebrities_id>/", views.stars_sortby, name="stars_sortby"),
+    path("<int:celebrities_id>/edit/", views.stars_edit, name="stars_edit"),
     path("addnewstar/", views.stars_addnewstar, name="stars_addnewstar"),
 
     # path("sortby/", views.stars_sortby, name="stars_sortby"),
