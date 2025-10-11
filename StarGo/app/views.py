@@ -322,6 +322,7 @@ def places(request):
 
     # profileowner = get_object_or_404(User, username=username)
 
+
     context = {
         'place_data': place_data,
     }
@@ -375,6 +376,8 @@ def places_sortby(request, places_id):
     thisplace = Places.objects.get(id=places_id)
     ensure_image_url(thisplace)
     whocamehere = Sightings.objects.filter(places=places_id).order_by('celebrities').distinct('celebrities')
+    allcomments = Comments.objects.filter(places=thisplace)
+    print('allcomments:', allcomments)
 
     places = Places.objects.all()
     place_data = list(places.values(
@@ -389,10 +392,31 @@ def places_sortby(request, places_id):
         except Exception as e:
             print('ensure_image_url error for sight:', e)
 
+    if request.method == 'GET':
+        form = CommentForm()
+    else:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    comment = form.save(commit=False)
+                    comment.places = thisplace
+                    comment.user = request.user
+                    comment.save()
+
+                    form = CommentForm()
+                    messages.success(request, "Your comment has been added.")
+                    return redirect('places_sortby', places_id=places_id)
+            except Exception as e:
+                print(e)
+                messages.error(request, f"An error occurred: {e}")
+
     context = {
         'place_data': place_data,
         'thisplace': thisplace,
-        'whocamehere': whocamehere
+        'whocamehere': whocamehere,
+        'allcomments': allcomments,
+        'form': form,
     }
 
     return render(request, 'places_sortby.html', context)
@@ -540,8 +564,8 @@ def profile_edit(request):
     return render(request, 'profile_edit.html', context)
 
     # ensure image url on render (covers POST flows that fall through)
-    ensure_image_url(users)
-    return render(request, 'profile_edit.html', context)
+    # ensure_image_url(users)
+    # return render(request, 'profile_edit.html', context)
 
 @login_required
 def profile_changepassword(request):

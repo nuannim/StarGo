@@ -77,7 +77,8 @@ WSGI_APPLICATION = 'StarGo.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "stargodemo", # ตามชื่อ database ที่สร้างใน postgressql
+        "NAME": "stargodemo",
+        # "NAME": "stargodevtools",
         "USER": "postgres",
         "PASSWORD": "123123123", # username + password ไม่ได้เหมือนกันทุกเครื่อง
         "HOST": "localhost",

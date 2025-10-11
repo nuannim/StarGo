@@ -107,7 +107,64 @@
             </div>                         -->
         </div>
 
+    </section>
 
+
+    <section class="d-flex flex-column align-items-center m-3 border-top">
+
+        <div class="container mt-5 mb-3 d-flex justify-content-center">
+            <h3>Comments</h3>
+        </div>
+        <div class="container mt-4">
+            <form enctype="multipart/form-data" method="post" class="mb-3">
+            {% csrf_token %}
+            <!-- Use bound form field so the input name matches what the view expects -->
+                <label for="id_comment_text" class="form-label">Add a comment</label>
+                {{ form.comment_text }}
+                <p class="mt-3">Ratings</p>
+                {% for radio in form.rating %}
+                <div class="form-check form-check-inline me-3"> <!-- form-check-inline คือหัวใจสำคัญ -->
+                    {{ radio.tag }} <!-- นี่คือ input radio -->
+                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                        {{ radio.choice_label }} star
+                    </label>
+                </div>
+                {% endfor %}
+                <br>
+                <button type="submit" class="btn mt-3" style="background-color: #FFBC00;">Post Comment</button>
+            <!-- </div> -->
+            </form>
+            <div class="mt-4">
+                <h5>Recent Comments</h5>
+                <div class="list-group">
+                    {% for c in allcomments %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{c.user.username}}</h6>
+                            <small>{{ c.created_at }}</small>
+                        </div>
+                        <p class="mb-1">{{c.comment_text}}</p>
+                    </div>
+                    {% endfor %}
+
+                    <!-- <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">User1</h6>
+                            <small>2 mins ago</small>
+                        </div>
+                        <p class="mb-1">Great place to visit!</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">User2</h6>
+                            <small>10 mins ago</small>
+                        </div>
+                        <p class="mb-1">Had a wonderful experience here.</p>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        
     </section>
 
 

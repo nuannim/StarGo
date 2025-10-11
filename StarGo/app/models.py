@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class Users(models.Model):
@@ -15,13 +17,14 @@ class Users(models.Model):
 
 
 class Celebrities(models.Model):
-    firstname = models.CharField(max_length=100)
-    lastname = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=100) #!
+    lastname = models.CharField(max_length=100) #!
     nickname = models.CharField(max_length=100)
-    bands = models.ManyToManyField('Bands', blank=True)
+    bands = models.ManyToManyField('Bands', blank=True) # !
     imageurl = models.FileField(upload_to='images/', blank=True, null=True) # * ถ้า upload_to='' จะไปเก็บใน media เลย
     # addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
     addby_auth_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -68,3 +71,25 @@ class Sightings(models.Model):
     def __str__(self):
         # return f"Sighting of {self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
         return f"{self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
+
+
+
+
+class Comments(models.Model):
+    # --- สิ่งที่ต้องมีเสมอ ---
+    places = models.ForeignKey(Places, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    # --- ฟิลด์ที่คุณถามถึง ---
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    comment_text = models.TextField(max_length=2000) # TextField สำหรับข้อความยาวๆ
+
+    # --- ฟิลด์ที่ควรมีอย่างยิ่ง ---
+    created_at = models.DateTimeField(auto_now_add=True) # วันเวลาที่สร้างคอมเมนต์
+    updated_at = models.DateTimeField(auto_now=True)     # วันเวลาที่แก้ไขล่าสุด
+
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.places.name}'
+

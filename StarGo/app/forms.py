@@ -178,6 +178,20 @@ class ProfileEditForm(ModelForm):
         return super().clean()
 
 
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['rating', 'comment_text']
+        widgets = {
+            'comment_text': Textarea(attrs={'class': 'form-control bg-light', 'rows': 3}),
+            'rating': forms.RadioSelect(choices=[(i, str(i)) for i in range(1, 6)]),
+        }
+
+    def clean_comment_text(self):
+        txt = self.cleaned_data.get('comment_text', '') or ''
+        if len(txt) > 2000:
+            raise ValidationError('ความยาวต้องไม่เกิน 2000 ตัวอักษร')
+        return txt
 
 # ===== 
 class CustomUserCreationForm(UserCreationForm):
@@ -232,3 +246,5 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             attrs={'class': 'form-control bg-light'}
         )
     )
+
+
