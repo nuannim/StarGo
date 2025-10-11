@@ -17,31 +17,20 @@ class Users(models.Model):
 
 
 class Celebrities(models.Model):
-    firstname = models.CharField(max_length=100) #!
-    lastname = models.CharField(max_length=100) #!
+    # firstname = models.CharField(max_length=100) #!
+    # lastname = models.CharField(max_length=100) #!
     nickname = models.CharField(max_length=100)
-    bands = models.ManyToManyField('Bands', blank=True) # !
     imageurl = models.FileField(upload_to='images/', blank=True, null=True) # * ถ้า upload_to='' จะไปเก็บใน media เลย
     # addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    addby_auth_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    # owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    addby_auth_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='celebrities_addby_auth_user')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='celebrities_owner')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname} ({self.nickname})"
+        return f"{self.nickname}"
 
 
-class Bands(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    company = models.CharField(max_length=100, blank=True, null=True)
-    datestartgroup = models.DateField(blank=True, null=True)
-    # addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
-    addby_auth_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
+# (Bands model removed) 
 
 
 class Places(models.Model):
@@ -69,8 +58,10 @@ class Sightings(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        # return f"Sighting of {self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
-        return f"{self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
+        # Celebrities may no longer have firstname/lastname fields. Use the
+        # Celebrities.__str__ representation which already falls back to nickname.
+        celeb_str = str(self.celebrities)
+        return f"{celeb_str} at {self.places} on {self.arrivaldate}"
 
 
 

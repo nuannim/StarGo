@@ -30,7 +30,7 @@ urlpatterns = [
     path('stars/', include('app.urls_stars')),
     path('places/', include('app.urls_places')),
     path('profile/', include('app.urls_profile')),
-    path('bands/', views.bands, name='bands'),
+    # bands URL removed (feature deprecated)
 
     path('login/', views.loginpage, name='loginpage'),
     path('logout/', views.logoutpage, name='logoutpage'),

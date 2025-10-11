@@ -5,5 +5,5 @@ from .models import *
 admin.site.register(Celebrities)
 admin.site.register(Places)
 admin.site.register(Sightings)
-admin.site.register(Bands)
+# Bands model removed — admin registration for Bands removed
 

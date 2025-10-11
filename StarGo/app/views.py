@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from django.db.models.functions import Concat
-from django.db.models import Value
+from django.db.models import Value, F
 from django.db import transaction
 
 from django.views import View
@@ -220,8 +220,9 @@ def sightings_edit(request, sightings_id):
 
 @login_required
 def stars(request):
+    # Model may not have firstname/lastname; use nickname as the displayed name
     stars_queryset = Celebrities.objects.annotate(
-        name=Concat('firstname', Value(' '), 'lastname', Value(' ('), 'nickname', Value(')'))
+        name=F('nickname')
     )
 
     star_data = list(stars_queryset.values(
@@ -283,7 +284,7 @@ def stars_addnewstar(request):
 def stars_sortby(request, celebrities_id):
     # * ก้อปมาจาก def stars()
     stars_queryset = Celebrities.objects.annotate(
-        name=Concat('firstname', Value(' '), 'lastname', Value(' ('), 'nickname', Value(')'))
+        name=F('nickname')
     )
     star_data = list(stars_queryset.values(
         'id',
@@ -310,7 +311,6 @@ def stars_sortby(request, celebrities_id):
             print('ensure_image_url error for wheretogo place:', e)
 
     return render(request, 'stars_sortby.html', context)
-
 # * ===== Places Views =========================
 @login_required
 def places(request):
@@ -657,7 +657,7 @@ def registerpage(request):
 
                     return redirect('places')
             except Exception as e:
-                print(e)
+                print('views.py - def registerpage():', e)
         else:
             messages.error(request, "Unsuccessful registration. Invalid information.")
 
@@ -667,32 +667,6 @@ def registerpage(request):
 
     return render (request, 'registerpage.html', context)
 
-@login_required
-def bands(request):
-    if request.method == 'GET':
-        form = BandsForm()
-    else:
-        form = BandsForm(request.POST, request.FILES)
-        with transaction.atomic():
-            if form.is_valid():
-                groupnotsave = form.save(commit=False)
-
-                print('request.user:', request.user)
-
-                myuser = User.objects.get(username=request.user)
-                print(myuser)
-                groupnotsave.addby_auth_user = myuser
-
-                groupnotsave.save()
-
-                form = BandsForm()
-                return redirect('bands')
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'bands.html', context)
 
 
 # * ===== other api (for js fetch) ========================

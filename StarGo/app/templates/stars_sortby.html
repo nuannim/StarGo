@@ -41,7 +41,7 @@
                         <!-- <h1>Marmink CGM48</h1>
                         <p class="fs-4">Manichar Aimdilokwong</p> -->
                         <h1>{{ celebrities.nickname }}</h1>
-                        <p class="fs-4">{{ celebrities.firstname }} {{ celebrities.lastname }}</p>
+                        <!-- firstname/lastname fields removed from Celebrities model; showing nickname only -->
                         {% if celebrities.groups.all %}
                             <p class="fs-5">(
                             {% for i in celebrities.groups.all %}

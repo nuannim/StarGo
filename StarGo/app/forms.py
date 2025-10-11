@@ -10,12 +10,14 @@ from django.contrib.auth.models import User
 class CelebritiesForm(ModelForm):
     class Meta:
         model = Celebrities
-        fields = ['firstname', 'lastname', 'nickname', 'bands', 'imageurl']
+        # The Celebrities model may not have firstname/lastname fields anymore.
+        # Keep nickname and imageurl. If bands still exists, it will be ignored
+        # by the form unless present in the model; including it here would
+        # raise an error when it's absent. To be safe, only list fields that
+        # we know exist.
+        fields = ['nickname', 'imageurl']
         widgets = {
-            'firstname': TextInput(attrs={'class': 'form-control bg-light'}),
-            'lastname': TextInput(attrs={'class': 'form-control bg-light'}),
             'nickname': TextInput(attrs={'class': 'form-control bg-light'}),
-            'bands': forms.SelectMultiple(attrs={'class': 'form-control bg-light'}),
             # 'imageurl': forms.FileInput(attrs={'class': 'form-control bg-light', 'id': 'imageupload'}),
             'imageurl': forms.FileInput(attrs={
                 'class': 'form-control bg-light', 'id': 'imageupload', 
@@ -29,21 +31,15 @@ class CelebritiesForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        firstname = (cleaned_data.get('firstname') or '').strip()
-        lastname = (cleaned_data.get('lastname') or '').strip()
         nickname = (cleaned_data.get('nickname') or '').strip()
 
-        if firstname and lastname and nickname:
-            qs = Celebrities.objects.filter(
-                firstname__iexact=firstname,
-                lastname__iexact=lastname,
-                nickname__iexact=nickname,
-            )
+        if nickname:
+            qs = Celebrities.objects.filter(nickname__iexact=nickname)
             if self.instance and getattr(self.instance, 'pk', None):
                 qs = qs.exclude(pk=self.instance.pk)
 
             if qs.exists():
-                raise ValidationError('A celebrity with the same first name, last name and nickname already exists.')
+                raise ValidationError('A celebrity with the same nickname already exists.')
 
         return cleaned_data
 
@@ -70,7 +66,8 @@ class PlacesForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         raw_name = cleaned_data.get('name') or ''
-        name = raw_name.strip().lower()
+        name = raw_name.strip()
+        # name = raw_name.strip().lower()
 
         if name:
             qs = Places.objects.filter(name__iexact=name)
@@ -133,21 +130,8 @@ class SightingsForm2(ModelForm):
         return cleaned_data
 
 
-class BandsForm(ModelForm):
-    class Meta:
-        model = Bands
-        fields = ['name', 'description', 'company', 'datestartgroup']
-        widgets = {
-            'name': TextInput(attrs={'class': 'form-control bg-light'}),
-            'description': Textarea(attrs={'class': 'form-control bg-light'}),
-            'company': TextInput(attrs={'class': 'form-control bg-light'}),
-            'datestartgroup': forms.DateInput(attrs={'class': 'form-control bg-light', 'type': 'date'}),
-        }
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        return cleaned_data
+# Bands model is not defined in models.py (commented out). If you later add
+# a Bands model, you can recreate a BandsForm here.
 
 
 class ProfileImageEditForm(ModelForm):
