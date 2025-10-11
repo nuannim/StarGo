@@ -302,6 +302,13 @@ def stars_sortby(request, celebrities_id):
         'wheretogo': wheretogo,
     }
 
+    # Normalize images for places shown in the wheretogo list so templates can call .imageurl.url
+    for sight in wheretogo:
+        try:
+            ensure_image_url(sight.places)
+        except Exception as e:
+            print('ensure_image_url error for wheretogo place:', e)
+
     return render(request, 'stars_sortby.html', context)
 
 # * ===== Places Views =========================
@@ -375,6 +382,13 @@ def places_sortby(request, places_id):
         'name'
     ))
 
+    # Normalize image URLs for celebrities referenced by the sightings shown on this page
+    for sight in whocamehere:
+        try:
+            ensure_image_url(sight.celebrities)
+        except Exception as e:
+            print('ensure_image_url error for sight:', e)
+
     context = {
         'place_data': place_data,
         'thisplace': thisplace,
@@ -417,6 +431,14 @@ def profile(request):
         ensure_image_url(p)
     for c in celebrities:
         ensure_image_url(c)
+
+    # Ensure place images for each sighting are normalized so template can use sight.places.imageurl.url
+    for s in sightings:
+        try:
+            ensure_image_url(s.places)
+            ensure_image_url(s.celebrities)
+        except Exception as e:
+            print('ensure_image_url error for sight in profile:', e)
 
     return render(request, 'profile.html', context)
 
