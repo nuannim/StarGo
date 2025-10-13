@@ -42,10 +42,18 @@
             <div class="d-flex flex-column align-items-center mt-3">
                 <h1>{{thisplace.name}}</h1>
                 <p class="fs-4">{{thisplace.address}}</p>
-                <div>
+                <div class="d-flex gap-3 mt-2">
                     <!-- <a href="">Add Sighting</a> -->
-                    <a href="{% url 'sightings' %}?place_id={{ thisplace.id }}" style="background-color: #FFBC00;" class="btn btn-lg">Add Who just come</a>
-                    <a href="{{ thisplace.googlemaplink }}" style="background-color: #FFBC00;" class="btn btn-lg">Google Maps Link</a>
+                    <a href="{% url 'sightings' %}?place_id={{ thisplace.id }}" 
+                        style="background-color: #FFBC00;" 
+                        class="btn btn-lg"><i class="bi bi-plus"></i>
+                        Add Who just come
+                    </a>
+                    <a href="{{ thisplace.googlemaplink }}" 
+                        style="background-color: #FFBC00;" 
+                        class="btn btn-lg"><i class="bi bi-geo-alt-fill"></i>
+                        Google Maps Link
+                    </a>
                 </div>
             </div>
         </div>
@@ -55,56 +63,31 @@
         <div class="container mt-5 mb-3 d-flex justify-content-center">
             <h3>Who came here?</h3>
         </div>
-        <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
+        <div class="container d-flex flex-row gap-3 flex-wrap justify-content-center p-3 mb-3" style="overflow-y: auto;">
         {% if whocamehere %}
             {% for i in whocamehere %}
-            <a href="{% url 'stars_sortby' celebrities_id=i.celebrities.id %}" class="link-primary text-decoration-none text-black">
-                <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 100%; width: 18vw;">
+            <!-- Card with a fixed width -->
+            <a href="{% url 'stars_sortby' celebrities_id=i.celebrities.id %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm card-custom" style="width: 18rem;"> <!-- กำหนดความกว้างที่นี่ -->
+                    
+                    <!-- Use img-top class for better placement -->
                     {% if not i.celebrities.imageurl %}
-                    <img src="{% static 'default-profile.png' %}" alt="" style="width: 80%; aspect-ratio: 1/1; object-fit: cover;"  class="m-3">
+                        <img src="{% static 'default-image.png' %}" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
                     {% else %}
-                    <img src="{{ i.celebrities.imageurl.url }}" alt="" style="width: 80%; aspect-ratio: 1/1; object-fit: cover;"  class="m-3">
+                        <img src="{{ i.celebrities.imageurl.url }}" class="card-img-top" alt="{{ i.celebrities.name }}" style="height: 200px; object-fit: cover;">
                     {% endif %}
-                    <h4>{{i.celebrities.nickname}}</h4>
-                    <p class="fs-5">{{i.celebrities.firstname}} {{i.celebrities.lastname}}</p>
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ i.celebrities.nickname }}</h5>
+                    </div>
                 </div>
             </a>
-
             {% endfor %}
         {% else %}
-            <h3>no one</h3>
+            <div class="m-3">
+                <h1>no where</h1>
+            </div>
         {% endif %}
-
-            <!-- <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/test_profile.png" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>                         -->
         </div>
 
 

@@ -249,6 +249,7 @@ def places(request):
 
     context = {
         'place_data': place_data,
+        'places': places,
     }
 
     return render(request, 'places.html', context)

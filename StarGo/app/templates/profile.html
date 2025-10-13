@@ -40,14 +40,10 @@
                 </div>
             </div>
 
-            <!-- Right Content - Categories -->
             <div class="col-md-9">
-                <!-- Celebs Section -->
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <h2 class="h5 fw-bold pb-2 mb-3 border-bottom">Celebs you added</h2>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                        <!-- Placeholder items - these would be populated from your database -->
-
                         {% for celeb in celebrities %}
                         <a href="{% url 'stars_sortby' celebrities_id=celeb.id %}" class="link-primary text-decoration-none text-black">
                             <div class="col">
@@ -61,115 +57,86 @@
                                         {% endif %}
                                         </div>
                                         <h4>{{ celeb.nickname }}</h4>
-                                        <!-- <p>test</p> -->
                                     </div>
                                 </div>
                             </div>
                         </a>
                         {% endfor %}
-                        <!-- <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body text-center">
-                                    <div class="rounded w-100 text-center" style="height: 150px;">
-                                        <img src="{% static 'default-place.png'%}" alt="" class="w-100">
-                                    </div>
-                                    <h4>test</h4>
-                                    <p>test</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="bg-light rounded w-100" style="height: 150px;"></div>
-                                </div>
-                            </div>
-                        </div> -->
+                    </div>
+                </div> -->
 
+                <!-- & Celebrities Section -->
+                <div class="mb-4">
+                    <h2 class="h5 fw-bold pb-2 mb-3 border-bottom">Celebs you added</h2>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                        <!-- <div class="d-flex flex-row gap-3 justify-content-start p-3 w-100" style="overflow-x: scroll;"> -->
+                        <div class="d-flex flex-row flex-wrap gap-3 justify-content-start p-3 w-100">
+                            {% for celeb in celebrities %}
+                            <a href="{% url 'stars_sortby' celebrities_id=celeb.id %}" class="text-decoration-none text-dark">
+                                <div class="card shadow-sm card-custom" style="width: 14rem;">
+                                    {% if celeb.imageurl %}
+                                        <img src="{{ celeb.imageurl.url }}" class="card-img-top" alt="{{ celeb.nickname }}" style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                        <img src="{% static 'default-profile.png' %}" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
+                                        {% endif %}
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{ celeb.nickname }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
-                <!-- Places Section -->
+                <!-- & Places Section -->
                 <div class="mb-4">
                     <h2 class="h5 fw-bold pb-2 mb-3 border-bottom">Places you added</h2>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                        <!-- Placeholder items - these would be populated from your database -->
-                        {% for place in places %}
-                        <a href="{% url 'places_sortby' places_id=place.id %}" class="link-primary text-decoration-none text-black">
-                            <div class="col">
-                                <div class="card h-100 shadow-sm">
+                        <!-- <div class="d-flex flex-row gap-3 justify-content-start p-3 w-100 hide-scrollbar" style="overflow-x: scroll;"> -->
+                        <div class="d-flex flex-row flex-wrap gap-3 justify-content-start p-3 w-100 hide-scrollbar">
+                            {% for place in places %}
+                            <a href="{% url 'places_sortby' places_id=place.id %}" class="text-decoration-none text-dark">
+                                <div class="card shadow-sm card-custom" style="width: 14rem;">
+                                    {% if not place.imageurl %}
+                                        <img src="{% static 'default-profile.png' %}" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{{ place.imageurl.url }}" class="card-img-top" alt="{{ place.name }}" style="height: 200px; object-fit: cover;">
+                                    {% endif %}
+
                                     <div class="card-body text-center">
-                                        <div class="rounded w-100 text-center" style="height: 150px;">
-                                        {% if place.imageurl %}
-                                            <img src="{{ place.imageurl.url }}" alt="" class="w-100">
-                                        {% else %}
-                                            <img src="{% static 'default-place.png'%}" alt="" class="w-100">
-                                        {% endif %}
-                                        </div>
-                                        <h4>{{ place.name }}</h4>
-                                        <!-- <p>test</p> -->
+                                        <h5 class="card-title">{{ place.name }}</h5>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                        {% endfor %}
+                            </a>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
-                <!-- Sightings Section -->
+                <!-- & Sightings Section -->
                 <div class="mb-4">
                     <h2 class="h5 fw-bold pb-2 mb-3 border-bottom">Sightings you added</h2>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                        <!-- Placeholder items - these would be populated from your database -->
-
-                        {% for sight in sightings %}
-                        <!-- ! เดี๋ยวมาเติมให้แก้ไขได้ -->
-                        <a href="{% url 'sightings_edit' sightings_id=sight.id %}" class="link-primary text-decoration-none text-black">
-                            <div class="col">
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="rounded w-100 text-center" style="height: 150px;">
-                                        {% if sight.places.imageurl %}
-                                            <img src="{{ sight.places.imageurl.url }}" alt="" class="w-100">
+                        <!-- <div class="d-flex flex-row gap-3 justify-content-start p-3 w-100 hide-scrollbar" style="overflow-x: scroll;"> -->
+                        <div class="d-flex flex-row flex-wrap gap-3 justify-content-start p-3 w-100 hide-scrollbar">
+                            {% for sight in sightings %}
+                            <a href="{% url 'sightings_edit' sightings_id=sight.id %}" class="text-decoration-none text-dark">
+                                <div class="card shadow-sm card-custom" style="width: 14rem;">
+                                    {% with place=sight.places %}
+                                        {% if place and place.imageurl %}
+                                            <img src="{{ place.imageurl.url }}" class="card-img-top" alt="{{ place.name }}" style="height: 200px; object-fit: cover;">
                                         {% else %}
-                                            <img src="{% static 'default-place.png'%}" alt="" class="w-100">
+                                            <img src="{% static 'default-place.png' %}" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
                                         {% endif %}
-                                        </div>
-                                        <h4>{{ sight }}</h4>
-                                        <!-- <p>test</p> -->
+                                    {% endwith %}
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{ sight }}</h5>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                        {% endfor %}
-                        <!-- <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="bg-light rounded w-100" style="height: 150px;"></div>
-                                </div>
-                            </div>
+                            </a>
+                            {% endfor %}
                         </div>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="bg-light rounded w-100" style="height: 150px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="bg-light rounded w-100" style="height: 150px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="bg-light rounded w-100" style="height: 150px;"></div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>

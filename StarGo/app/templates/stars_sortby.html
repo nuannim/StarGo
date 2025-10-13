@@ -53,7 +53,11 @@
                             )</p>
                         {% endif %}
                         <!-- <a href="{% url 'sightings_stars' celebrities_id=celebrities.id %}" style="background-color: #FFBC00;" class="btn btn-lg">add new visited place</a> -->
-                        <a href="{% url 'sightings' %}?celebrities_id={{ celebrities.id }}" style="background-color: #FFBC00;" class="btn btn-lg">Add sightings</a>
+                        <a href="{% url 'sightings' %}?celebrities_id={{ celebrities.id }}" 
+                            style="background-color: #FFBC00;" 
+                            class="btn btn-lg"><i class="bi bi-plus"></i>
+                            Add sightings
+                        </a>
                             <!-- <button type="submit" class="btn btn-lg mt-4" style="background-color: #FFBC00;">Confirm</button> -->
 
                         <!-- <button class="btn btn-group-lg">add new visited place</button> -->
@@ -67,53 +71,33 @@
         <div class="container mt-5 mb-3 d-flex justify-content-center">
             <h3>Where to go</h3>
         </div>
-        <div class="container d-flex flex-wrap gap-3 mt-1 justify-content-center">
+        <div class="container d-flex flex-row gap-3 flex-wrap justify-content-center p-3" style="overflow-y: auto;">
         {% if wheretogo %}
             {% for i in wheretogo %}
-                <a href="{% url 'places_sortby' places_id=i.places.id %}" class="link-primary text-decoration-none text-black">
-                    <div class="border d-flex flex-column align-items-center rounded bg-light shadow-sm" style="height: 100%; width: 18vw;">
-                        {% if not i.places.imageurl %}
-                            <img src="{% static 'default-place.png' %}" alt="" style="width: 80%; aspect-ratio: 4/3; object-fit: cover;" class="m-3">
-                        {% else %}
-                            <img src="{{ i.places.imageurl.url }}" alt="" style="width: 80%; aspect-ratio: 4/3; object-fit: cover;" class="m-3">
-                        {% endif %}
-                        <h4 class="d-block text-center">{{ i.places.name }}</h4>
+            <!-- Card with a fixed width -->
+            <a href="{% url 'places_sortby' places_id=i.places.id %}" class="text-decoration-none text-dark">
+                <div class="card shadow-sm card-custom" style="width: 18rem;"> <!-- กำหนดความกว้างที่นี่ -->
+                    
+                    <!-- Use img-top class for better placement -->
+                    {% if not i.places.imageurl %}
+                        <img src="{% static 'default-image.png' %}" class="card-img-top" alt="No image" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ i.places.imageurl.url }}" class="card-img-top" alt="{{ i.places.name }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ i.places.name }}</h5>
                         <p class="text-sm-center d-block">{{ i.places.address }}</p>
                     </div>
-                </a>
+                </div>
+            </a>
             {% endfor %}
         {% else %}
             <div class="m-3">
                 <h1>no where</h1>
             </div>
         {% endif %}
-            <!-- <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>            
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>            
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>            
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div>
-            <div class="border d-flex flex-column align-items-center rounded" style="height: 50vh;">
-                <img src="/static/Megabangna.webp" alt="" style="width: 15vw;" class="m-3">
-                <h4>kanigi</h4>
-                <p class="fs-5">vitita ifeifeajife</p>
-            </div> -->
         </div>
-
 
     </section>
 

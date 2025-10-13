@@ -36,6 +36,7 @@
             <!-- * dropdown ของ profile ขวาบน -->
             <div class="dropdown d-none d-lg-block">
                 <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- * user คือเรียกตาราง auth_user เป็น build in มากับ django ให้เรียกง่าย -->
                     {% if user.users.imageurl %}
                     <img src="{{ user.users.imageurl.url }}" alt="stargologo" width="50vw" height="50vw" class="rounded-circle object-fit-cover">
                     {% else %}
