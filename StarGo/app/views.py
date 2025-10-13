@@ -177,8 +177,11 @@ def stars(request):
         'name',
     ))
 
+    latest_celebrities = Celebrities.objects.all().order_by('-created_at')[:4]
+
     context = {
-        'star_data': star_data
+        'star_data': star_data,
+        'latest_celebrities': latest_celebrities,
     }
 
     return render(request, 'stars.html', context)
@@ -239,17 +242,19 @@ def stars_sortby(request, celebrities_id):
 # * ===== Places Views =========================
 @login_required
 def places(request):
-    places = Places.objects.all()
-    place_data = list(places.values(
+    all_places = Places.objects.all()
+    place_data = list(all_places.values(
         'id',
         'name'
     ))
+
+    latest_places = Places.objects.order_by('-created_at')[:4]
 
     # profileowner = get_object_or_404(User, username=username)
 
     context = {
         'place_data': place_data,
-        'places': places,
+        'latest_places': latest_places,
     }
 
     return render(request, 'places.html', context)
