@@ -13,11 +13,7 @@
 </head>
 
 <body class="pt-5 bg-light">
-    {% if perms.app.delete_celebrities %}
-        {% include 'nav_admin.html' %}
-    {% else %}
-        {% include 'nav.html' %}
-    {% endif %}
+    {% include 'nav.html' %}
 
     <section class="container py-4 my-5">
         <div class="row g-4">

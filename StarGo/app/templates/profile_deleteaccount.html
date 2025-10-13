@@ -21,11 +21,7 @@
 </head>
 
 <body style="padding-top: 100px;">
-    {% if perms.app.delete_celebrities %}
-        {% include 'nav_admin.html' %}
-    {% else %}
-        {% include 'nav.html' %}
-    {% endif %}
+    {% include 'nav.html' %}
 
     <!-- * ======== ส่วนเนื้อหาหลัก ======== -->
     <div class="container my-5">
