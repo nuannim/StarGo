@@ -179,7 +179,7 @@ def stars(request):
         'name',
     ))
 
-    latest_celebrities = Celebrities.objects.all().order_by('-created_at')
+    latest_celebrities = Celebrities.objects.all().order_by('nickname')
 
     context = {
         'star_data': star_data,
@@ -291,7 +291,7 @@ def places(request):
         'name'
     ))
 
-    latest_places = Places.objects.order_by('-created_at')
+    latest_places = Places.objects.order_by('name')
 
     # profileowner = get_object_or_404(User, username=username)
 
@@ -525,6 +525,24 @@ def profile_deleteaccount(request):
     return render(request, 'profile_deleteaccount.html')
 
 
+def all_users(request):
+    all_user = User.objects.filter(groups__name='user').order_by('is_active', 'username')
+    # all_user = User.objects.all()
+    # print('all_user:', all_user[0].is_active)
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        user = User.objects.get(id=user_id)
+        user.is_active = not user.is_active
+        user.save()
+
+    context = {
+        'all_user': all_user,
+    }
+
+    return render(request, 'all_users.html', context)
+
+
 # * ===== Login/Logout Authentication ==========================
 def loginpage(request):
     if request.method == 'GET':
@@ -604,13 +622,16 @@ def bands(request):
                 groupnotsave.save()
 
                 form = BandsForm()
-                return redirect('bands')
+                return redirect('stars_addnewstar')
 
     context = {
         'form': form,
     }
 
     return render(request, 'bands.html', context)
+
+
+
 
 
 # * ===== other api (for js fetch) ========================

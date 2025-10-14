@@ -37,6 +37,12 @@
                         <a href="{% url 'stars' %}" class="nav-link">Stars</a>
                         {% endif %}
                     </li>
+                    <li class="nav-item fs-3 ms-4">
+                        {% if user.is_staff %}
+                        <a href="{% url 'all_users' %}" class="nav-link" style="color: #FFBC00;">Users</a>
+
+                        {% endif %}
+                    </li>
                     <!-- Mobile only profile links -->
                     <li class="nav-item d-lg-none">
                         <a class="nav-link" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Your profile</a>

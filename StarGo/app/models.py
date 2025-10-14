@@ -29,7 +29,7 @@ class Celebrities(models.Model):
 
 
 class Bands(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
     company = models.CharField(max_length=100, blank=True, null=True)
     datestartgroup = models.DateField(blank=True, null=True)
@@ -42,7 +42,7 @@ class Bands(models.Model):
 
 
 class Places(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     googlemaplink = models.CharField(max_length=300, blank=True, null=True)
     address = models.CharField(max_length=200)
     # addby_users = models.ForeignKey('Users', on_delete=models.CASCADE, blank=True, null=True)
@@ -68,3 +68,4 @@ class Sightings(models.Model):
     def __str__(self):
         # return f"Sighting of {self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
         return f"{self.celebrities.firstname} ({self.celebrities.nickname}) at {self.places} on {self.arrivaldate}"
+

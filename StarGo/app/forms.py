@@ -39,7 +39,7 @@ class CelebritiesForm(ModelForm):
                 lastname__iexact=lastname,
                 nickname__iexact=nickname,
             )
-            if self.instance and getattr(self.instance, 'pk', None):
+            if self.instance and self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
 
             if qs.exists():
@@ -74,19 +74,20 @@ class PlacesForm(ModelForm):
 
         if name:
             qs = Places.objects.filter(name__iexact=name)
-            if self.instance and getattr(self.instance, 'pk', None):
+            if self.instance and self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
+            # * ใช้ instance เลยต้องเช็คว่า instance มี pk หรือยัง
 
             if qs.exists():
-                # Raise a form-level validation error so it appears in non-field errors alert
                 raise ValidationError('A place with the same name already exists.')
 
-            # put the normalized name back so it will be saved in lowercase
-            cleaned_data['name'] = name
+            # cleaned_data['name'] = name
+            cleaned_data['name'] = raw_name
 
         return cleaned_data
 
 
+# * ไม่ได้ใช้แล้ว
 class SightingsForm(ModelForm):
     class Meta:
         model = Sightings
