@@ -177,7 +177,7 @@ def stars(request):
         'name',
     ))
 
-    latest_celebrities = Celebrities.objects.all().order_by('-created_at')[:4]
+    latest_celebrities = Celebrities.objects.all().order_by('-created_at')
 
     context = {
         'star_data': star_data,
@@ -248,7 +248,7 @@ def places(request):
         'name'
     ))
 
-    latest_places = Places.objects.order_by('-created_at')[:4]
+    latest_places = Places.objects.order_by('-created_at')
 
     # profileowner = get_object_or_404(User, username=username)
 
