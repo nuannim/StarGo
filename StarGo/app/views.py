@@ -13,6 +13,8 @@ from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 # from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseNotAllowed
 
 from app.forms import *
 from .models import *
@@ -239,6 +241,47 @@ def stars_sortby(request, celebrities_id):
 
     return render(request, 'stars_sortby.html', context)
 
+
+@staff_member_required
+@login_required
+def stars_edit(request, celebrities_id):
+    thisstar = Celebrities.objects.get(id=celebrities_id)
+
+    if request.method == 'GET':
+        form = CelebritiesForm(instance=thisstar)
+    else:
+        form = CelebritiesForm(request.POST, request.FILES, instance=thisstar)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    form.save()
+                    form = CelebritiesForm(instance=thisstar)
+
+                    return redirect('stars_sortby', celebrities_id=celebrities_id)
+            except Exception as e:
+                print('error from def stars_edit POST method:', e)
+
+    context = {
+        'thisstar': thisstar,
+        'form': form,
+    }
+
+    return render(request, 'stars_addnewstar.html', context)
+
+
+@staff_member_required
+@login_required
+def stars_delete(request, celebrities_id):
+    thisstar = Celebrities.objects.get(id=celebrities_id)
+
+    if request.method == 'POST':
+        thisstar.delete()
+        # messages.success(request, 'The star has been deleted.')
+        return redirect('stars')
+
+    return HttpResponseNotAllowed(['POST'])
+
+
 # * ===== Places Views =========================
 @login_required
 def places(request):
@@ -305,6 +348,46 @@ def places_sortby(request, places_id):
 
     return render(request, 'places_sortby.html', context)
 
+
+@login_required
+def places_edit(request, places_id):
+    thisplace = Places.objects.get(id=places_id)
+
+    if request.method == 'GET':
+        form = PlacesForm(instance=thisplace)
+    else:
+        form = PlacesForm(request.POST, request.FILES, instance=thisplace)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    form.save()
+                    form = PlacesForm(instance=thisplace)
+
+                    return redirect('places_sortby', places_id=places_id)
+            except Exception as e:
+                print('error from def places_edit POST method:', e)
+
+    context = {
+        'thisplace': thisplace,
+        'form': form,
+    }
+
+    return render(request, 'places_addnewplace.html', context)
+
+
+@staff_member_required
+@login_required
+def places_delete(request, places_id):
+    thisplace = Places.objects.get(id=places_id)
+
+    if request.method == 'POST':
+        thisplace.delete()
+        messages.success(request, 'The place has been deleted.')
+        return redirect('places')
+
+    return HttpResponseNotAllowed(['POST'])
+
+
 # * ===== Profile Views ========================
 @login_required
 def profile(request):
@@ -359,7 +442,6 @@ def profile_share(request, username):
     return render(request, 'profile_share.html', context)
 
 
-
 @login_required
 def profile_edit(request):
     users = Users.objects.get(auth_user_id=request.user.id)
@@ -401,6 +483,7 @@ def profile_edit(request):
     }
 
     return render(request, 'profile_edit.html', context)
+
 
 @login_required
 def profile_changepassword(request):
