@@ -60,27 +60,23 @@ def sightings(request):
     #     form = SightingsForm2()
 
     getsource = None
+    # * getsource เอาไว้ส่งกลับไปที่ sightings.html ว่ามาจากหน้าไหน จะได้ redirect ไปหาเดิมถูก
 
     if request.method == 'GET':
-        # สร้าง Dictionary ว่างๆ เพื่อเก็บค่าเริ่มต้น
         initial_data = {}
 
-        # ตรวจสอบว่ามี star_id ส่งมาใน URL หรือไม่
         celebritiesIdFromURL = request.GET.get('celebrities_id')
         if celebritiesIdFromURL:
-            # ถ้ามี, กำหนดค่าเริ่มต้นให้กับฟิลด์ 'celebrities'
             initial_data['celebrities'] = celebritiesIdFromURL
             getsource = 'celebrities'
 
-        # ตรวจสอบว่ามี place_id ส่งมาใน URL หรือไม่
         placeIdFromURL = request.GET.get('place_id')
         if placeIdFromURL:
-            # ถ้ามี, กำหนดค่าเริ่มต้นให้กับฟิลด์ 'places'
             initial_data['places'] = placeIdFromURL
             getsource = 'places'
 
-        # สร้างฟอร์มโดยส่ง initial_data เข้าไป
-        # Django จะนำค่า id ไปเลือก option ใน dropdown ให้เองอัตโนมัติ
+        # * รับ getsource มาเสร็จ ส่งไปไว้ใน input hidden ใน sightings.html
+
         form = SightingsForm2(initial=initial_data)
     else:
         form = SightingsForm2(request.POST)
@@ -97,6 +93,7 @@ def sightings(request):
                     # form = SightingsForm2()
 
                     postsource = request.POST.get('source')
+                    # * ขา post ก็เอากลับมาใส่เงื่อนไข ไว้ใช้ redirect ไปที่หน้าเดิม
 
                     if postsource == 'celebrities':
                         c_id = form.cleaned_data['celebrities'].id
@@ -123,7 +120,7 @@ def sightings_edit(request, sightings_id):
     sightings = Sightings.objects.get(pk=sightings_id)
     print('sightings:', sightings)
 
-    # * เอาไว้ดัก ถ้าไม่ได้สร้าง sightings นี้ ให้ redirect ไปที่ profile
+    # * เอาไว้ดัก ถ้าแอคเค้านี้ไม่ได้สร้าง sightings นี้ ให้ redirect ไปที่ profile
     if sightings.addby_auth_user != request.user:
         messages.error(request, "You do not have permission to edit that sighting.")
         return redirect('profile') 
@@ -213,7 +210,6 @@ def stars_addnewstar(request):
         'form': form,
     }
 
-
     return render(request, 'stars_addnewstar.html', context)
 
 
@@ -231,7 +227,6 @@ def stars_sortby(request, celebrities_id):
     # * celebrities
     celebrities = Celebrities.objects.get(id=celebrities_id)
     wheretogo = Sightings.objects.filter(celebrities=celebrities_id).order_by('places', '-arrivaldate').distinct('places')
-
 
     context = {
         'star_data': star_data,
@@ -292,8 +287,6 @@ def places(request):
     ))
 
     latest_places = Places.objects.order_by('name')
-
-    # profileowner = get_object_or_404(User, username=username)
 
     context = {
         'place_data': place_data,
@@ -382,7 +375,7 @@ def places_delete(request, places_id):
 
     if request.method == 'POST':
         thisplace.delete()
-        messages.success(request, 'The place has been deleted.')
+        # messages.success(request, 'The place has been deleted.')
         return redirect('places')
 
     return HttpResponseNotAllowed(['POST'])
@@ -402,11 +395,6 @@ def profile(request):
     # sightings = Sightings.objects.filter(addby_auth_user_id=request.user.id).distinct()
     # places = Places.objects.filter(addby_auth_user_id=request.user.id)
     # celebrities = Celebrities.objects.filter(addby_auth_user_id=request.user.id)
-
-    print('userid:', request.user.id)
-    print('sightings:', sightings)
-    print('places:', places)
-    print('celebrities:', celebrities)
 
     context = {
         'users': users,

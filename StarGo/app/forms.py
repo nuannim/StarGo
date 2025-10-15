@@ -24,7 +24,6 @@ class CelebritiesForm(ModelForm):
 
     def clean_data(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
         return cleaned_data
 
     def clean(self):
@@ -62,11 +61,6 @@ class PlacesForm(ModelForm):
                 'accept': 'image/*'}),
         }
 
-    def clean_data(self):
-        cleaned_data = super().clean()
-
-        return cleaned_data
-
     def clean(self):
         cleaned_data = super().clean()
         raw_name = cleaned_data.get('name') or ''
@@ -74,9 +68,10 @@ class PlacesForm(ModelForm):
 
         if name:
             qs = Places.objects.filter(name__iexact=name)
+
             if self.instance and self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
-            # * ใช้ instance เลยต้องเช็คว่า instance มี pk หรือยัง
+                # * ยกเว้นตัวเองออกจากการค้นหา
 
             if qs.exists():
                 raise ValidationError('A place with the same name already exists.')
@@ -87,7 +82,7 @@ class PlacesForm(ModelForm):
         return cleaned_data
 
 
-# * ไม่ได้ใช้แล้ว
+# ! ไม่ได้ใช้แล้ว
 class SightingsForm(ModelForm):
     class Meta:
         model = Sightings
@@ -100,7 +95,6 @@ class SightingsForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # Perform custom validation here if needed
         return cleaned_data
 
 
@@ -177,7 +171,6 @@ class ProfileEditForm(ModelForm):
 
     def clean(self):
         return super().clean()
-
 
 
 # ===== 
