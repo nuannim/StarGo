@@ -1,0 +1,36 @@
+admin1
+test12345
+
+superuser
+test12345
+
+----------
+for present
+
+user1
+test12345
+
+KMITL
+https://maps.app.goo.gl/7xuPew2LvRWidquH9
+1 ซอย ฉลองกรุง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520
+
+
+
+Mega Bangna
+https://maps.app.goo.gl/zhkTzqQXztyXLXXL6
+38/1-3 39 หมู่ที่ 6 ทางคู่ขนาน ถนนบางนา-ตราด ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540
+
+
+
+Fashion Island
+https://maps.app.goo.gl/vdbFnaJUgKX4uGdT7
+587-589/7-9 ถ. รามอินทรา แขวงคันนายาว เขตคันนายาว กรุงเทพมหานคร 10230
+
+
+
+
+Ratwinit Bangkaeo School
+https://maps.app.goo.gl/kSxXJTRHdoHUZnKo8
+31 หมู่ 13 ซอย เมืองแก้ว 4 ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540
+
+
